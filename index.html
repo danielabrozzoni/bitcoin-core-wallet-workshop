@@ -88,6 +88,13 @@
         <a class="nav-sub" href="#wallet-descriptors" data-parent="wallet-evolution">Descriptor model</a>
         <a class="nav-sub" href="#wallet-taproot-descriptor" data-parent="wallet-evolution">Complex script</a>
       </div>
+      <a class="nav-main" href="#descriptor-exercise-goal" data-group="descriptor-exercise"><span>10</span>Exercise 02: descriptors</a>
+      <div class="nav-subgroup" aria-label="Exercise 02 descriptors">
+        <a class="nav-sub" href="#descriptor-exercise-list" data-parent="descriptor-exercise">List descriptors</a>
+        <a class="nav-sub" href="#descriptor-exercise-next-index" data-parent="descriptor-exercise">Watch next_index</a>
+        <a class="nav-sub" href="#descriptor-exercise-address-types" data-parent="descriptor-exercise">Address types</a>
+        <a class="nav-sub" href="#descriptor-exercise-change" data-parent="descriptor-exercise">Change camouflage</a>
+      </div>
     </nav>
   </aside>
 
@@ -847,7 +854,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           </tbody>
         </table>
       </div>
-      <p class="step-label">Once a wallet is loaded, scope later commands with <code>-rpcwallet=&lt;name&gt;</code>, or let Bitcoin Core use the default when only one wallet is loaded.</p>
+      <p class="step-label">Once a single wallet is loaded, later wallet commands use it by default.</p>
     </section>
 
     <section id="wallet-getbalances" class="slide area-slide">
@@ -867,7 +874,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Coinbase rewards that belong to the wallet but are not yet 100 blocks deep.</span>
         </div>
       </div>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir -rpcwallet=&lt;name&gt; getbalances</code></pre>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir getbalances</code></pre>
     </section>
 
     <section id="wallet-listunspent" class="slide area-slide">
@@ -891,7 +898,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Whether the wallet has what it needs to spend that output.</span>
         </div>
       </div>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir -rpcwallet=&lt;name&gt; listunspent</code></pre>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir listunspent</code></pre>
     </section>
 
     <section id="wallet-sendtoaddress" class="slide area-slide">
@@ -986,6 +993,11 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Check which wallets are currently loaded.</span>
         </div>
       </div>
+      <div class="callout expected">
+        <h3>If more than one wallet is loaded</h3>
+        <p>Wallet commands need <code>-rpcwallet=&lt;name&gt;</code> when multiple wallets are loaded. For the workshop, keep the commands simple by unloading every wallet except the one you are using.</p>
+        <pre class="code"><code>bitcoin-cli -datadir=bitcoind-datadir unloadwallet &lt;wallet_name&gt;</code></pre>
+      </div>
     </section>
 
     <section id="wallet-exercise-fund" class="slide area-slide">
@@ -1012,7 +1024,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
     <section id="wallet-exercise-send" class="slide area-slide">
       <h2>Send to another address</h2>
       <p class="exercise-copy">Next, create a destination address and send some coins to it. In regtest this can be another address from the same wallet; the point is to create a real transaction and watch how the wallet state changes.</p>
-      <p class="exercise-copy">Before sending, use <code>getbalances</code> to check that the wallet has mature coins available. Then send with <code>sendtoaddress</code> and check the mempool to see that the transaction is waiting to be mined.</p>
+      <p class="exercise-copy">Before sending, use <code>getbalances</code> to check that the wallet has mature coins available. Then send with <code>-named sendtoaddress</code>, pass an explicit <code>fee_rate</code> in sat/vB, and check the mempool to see that the transaction is waiting to be mined.</p>
       <p class="file-panel-label">Suggested flow:</p>
       <div class="file-panel">
         <div>
@@ -1024,14 +1036,15 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Generate the destination address for the payment.</span>
         </div>
         <div>
-          <code>sendtoaddress</code>
-          <span>Send coins and save the txid returned by the wallet.</span>
+          <code>-named sendtoaddress</code>
+          <span>Send coins with <code>fee_rate=&lt;sats/vB&gt;</code> and save the txid returned by the wallet.</span>
         </div>
         <div>
           <code>getrawmempool</code>
           <span>Check that the new transaction is waiting in the mempool.</span>
         </div>
       </div>
+      <pre class="code command-code"><code>bitcoin-cli -named -datadir=bitcoind-datadir sendtoaddress address=&lt;address&gt; amount=&lt;amount&gt; fee_rate=&lt;sats/vB&gt;</code></pre>
       <p class="exercise-copy panel-followup"><code>sendtoaddress</code> returns a transaction id. Keep that txid so you can inspect the transaction in the next step.</p>
     </section>
 
@@ -1273,6 +1286,102 @@ OP_EQUALVERIFY OP_CHECKSIG</code></pre>
     )
   }
 )</code></pre>
+    </section>
+
+    <section id="descriptor-exercise-goal" class="slide area-slide">
+      <h2>Exercise 02: descriptors</h2>
+      <p class="exercise-copy">Now that we have seen why descriptors exist, we will inspect the descriptors inside a real Bitcoin Core wallet.</p>
+      <p class="exercise-copy">The goal is to connect the descriptor model to wallet behavior: address generation, address types, receive descriptors, and change descriptors.</p>
+      <div class="file-panel">
+        <div>
+          <code>Time</code>
+          <span>10 min</span>
+        </div>
+        <div>
+          <code>Goal</code>
+          <span>Use <code>listdescriptors</code> to see how the wallet derives receive and change addresses.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="descriptor-exercise-list" class="slide area-slide">
+      <h2>List wallet descriptors</h2>
+      <p class="exercise-copy">Start with the wallet from Exercise 01 and call <code>listdescriptors</code>. A default descriptor wallet has eight active descriptors: four address types, each with one external descriptor and one internal descriptor.</p>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
+      <p class="file-panel-label">What to look for:</p>
+      <div class="file-panel">
+        <div>
+          <code>pkh(...)</code>
+          <span>Legacy P2PKH addresses.</span>
+        </div>
+        <div>
+          <code>sh(wpkh(...))</code>
+          <span>Segwit wrapped in P2SH addresses.</span>
+        </div>
+        <div>
+          <code>wpkh(...)</code>
+          <span>Native segwit v0 addresses.</span>
+        </div>
+        <div>
+          <code>tr(...)</code>
+          <span>Taproot addresses.</span>
+        </div>
+      </div>
+      <p class="exercise-copy panel-followup">For each type, <code>"internal": false</code> is used for receive addresses and <code>"internal": true</code> is used for change addresses.</p>
+    </section>
+
+    <section id="descriptor-exercise-next-index" class="slide area-slide">
+      <h2>Watch <code>next_index</code></h2>
+      <p class="exercise-copy">Every descriptor in this wallet is ranged. The <code>/*</code> at the end of the extended public key path means the descriptor can derive many addresses, one per index.</p>
+      <p class="exercise-copy">The <code>next_index</code> field tells us which index Bitcoin Core will derive next for that descriptor. Generate another address, then list descriptors again and compare the result.</p>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir getnewaddress
+bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
+      <div class="callout expected">
+        <h3>Expected result</h3>
+        <p>The external descriptor used by <code>getnewaddress</code> should have a higher <code>next_index</code>. In a default wallet this is usually the <code>wpkh(...)</code> descriptor, unless you chose a different default address type.</p>
+      </div>
+    </section>
+
+    <section id="descriptor-exercise-address-types" class="slide area-slide">
+      <h2>Generate different address types</h2>
+      <p class="exercise-copy">Because the wallet has multiple descriptors, it can generate different address types from the same wallet. Use named arguments with <code>getnewaddress</code> and set <code>address_type</code>.</p>
+      <pre class="code command-code"><code>bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=legacy
+bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=p2sh-segwit
+bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=bech32
+bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=bech32m</code></pre>
+      <div class="file-panel">
+        <div>
+          <code>legacy</code>
+          <span>Uses the <code>pkh(...)</code> descriptor.</span>
+        </div>
+        <div>
+          <code>p2sh-segwit</code>
+          <span>Uses the <code>sh(wpkh(...))</code> descriptor.</span>
+        </div>
+        <div>
+          <code>bech32</code>
+          <span>Uses the <code>wpkh(...)</code> descriptor.</span>
+        </div>
+        <div>
+          <code>bech32m</code>
+          <span>Uses the <code>tr(...)</code> descriptor.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="descriptor-exercise-change" class="slide area-slide">
+      <h2>Why keep all address types?</h2>
+      <p class="exercise-copy">One reason is change camouflage. When Bitcoin Core creates a transaction, it tries to make the change output look plausible among the recipient outputs instead of always using the wallet default address type.</p>
+      <p class="exercise-copy">Look in <code>src/wallet/wallet.cpp</code> at <code>CWallet::TransactionChangeType</code>. The wallet uses the recipient output type when choosing what kind of change address to generate, when possible.</p>
+      <pre class="code"><code># Spending from a bech32 input:
+
+# Easier to guess:
+output 0: legacy address     0.01 BTC
+output 1: bech32 change      0.42 BTC  # likely change
+
+# Better camouflage:
+output 0: legacy address     0.01 BTC
+output 1: legacy change      0.42 BTC</code></pre>
     </section>
 
   </main>

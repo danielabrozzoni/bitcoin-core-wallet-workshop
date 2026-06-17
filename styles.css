@@ -481,6 +481,10 @@ h3 {
   text-transform: uppercase;
 }
 
+.command-list-label {
+  margin-top: 1.5rem;
+}
+
 .file-panel div {
   display: grid;
   grid-template-columns: minmax(14rem, 0.46fr) 1fr;

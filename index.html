@@ -79,7 +79,8 @@
         <a class="nav-sub" href="#wallet-exercise-confirm" data-parent="wallet-exercise">Confirm the transaction</a>
         <a class="nav-sub" href="#wallet-exercise-bonus" data-parent="wallet-exercise">Bonus question</a>
       </div>
-      <a class="nav-main" href="#wallet-evolution" data-group="wallet-evolution"><span>09</span>Wallet evolution</a>
+      <a class="nav-main" href="#raw-wallet-exercise-goal" data-group="raw-wallet-exercise"><span>09</span>Exercise 02: raw wallet operations</a>
+      <a class="nav-main" href="#wallet-evolution" data-group="wallet-evolution"><span>10</span>Wallet evolution</a>
       <div class="nav-subgroup" aria-label="Wallet evolution">
         <a class="nav-sub" href="#wallet-legacy" data-parent="wallet-evolution">Legacy wallet.dat</a>
         <a class="nav-sub" href="#wallet-hd" data-parent="wallet-evolution">HD wallets</a>
@@ -1068,6 +1069,41 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <div class="callout expected">
         <h3>Starting point</h3>
         <p>Look for the constant in <code>src/consensus/consensus.h</code>, then use GitHub search to see where the variable is used.</p>
+      </div>
+    </section>
+
+    <section id="raw-wallet-exercise-goal" class="slide area-slide">
+      <h2>Exercise 02: raw wallet operations</h2>
+      <p class="exercise-copy">Optional challenge: if you finished Exercise 01, use the remaining time to spend coins with the raw transaction RPCs.</p>
+      <p class="exercise-copy">The goal is to create a transaction manually with <code>createrawtransaction</code>, sign it with <code>signrawtransactionwithwallet</code>, and broadcast it with <code>sendrawtransaction</code>.</p>
+      <div class="file-panel">
+        <div>
+          <code>Optional</code>
+          <span>This is advanced. Expect to look up arguments with <code>help &lt;command&gt;</code>.</span>
+        </div>
+        <div>
+          <code>Goal</code>
+          <span>Spend coins using raw transaction commands.</span>
+        </div>
+      </div>
+      <p class="file-panel-label command-list-label">Commands to use:</p>
+      <div class="file-panel">
+        <div>
+          <code>createrawtransaction</code>
+          <span>Create the unsigned transaction.</span>
+        </div>
+        <div>
+          <code>signrawtransactionwithwallet</code>
+          <span>Sign it with your wallet.</span>
+        </div>
+        <div>
+          <code>sendrawtransaction</code>
+          <span>Broadcast the signed transaction.</span>
+        </div>
+        <div>
+          <code>decoderawtransaction</code>
+          <span>Use this at any time to inspect what your transaction currently looks like.</span>
+        </div>
       </div>
     </section>
 

@@ -345,6 +345,14 @@ h3 {
   font-size: 0.95em;
 }
 
+.config-followup {
+  margin-top: 1.5rem;
+}
+
+.panel-followup {
+  margin-top: 1.5rem;
+}
+
 .step-block {
   margin: 1.2rem 0 1.5rem;
 }

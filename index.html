@@ -20,7 +20,6 @@
       <a class="nav-main" href="#title" data-group="intro"><span>01</span>Bitcoin Core Wallet</a>
       <div class="nav-subgroup" aria-label="Bitcoin Core">
         <a class="nav-sub" href="#project" data-parent="intro">What Bitcoin Core is</a>
-        <a class="nav-sub" href="#node-jobs" data-parent="intro">What a full node does</a>
       </div>
       <a class="nav-main archived" href="#development" data-group="development" data-archived="true"><span>02</span>Development Process</a>
       <div class="nav-subgroup archived" aria-label="Development process" data-archived="true">
@@ -58,25 +57,29 @@
         <a class="nav-sub" href="#node-cli-datadir" data-parent="setup">Using -datadir</a>
         <a class="nav-sub" href="#node-cli-first-commands" data-parent="setup">First commands to try</a>
         <a class="nav-sub" href="#node-cli-help" data-parent="setup">Getting help</a>
-        <a class="nav-sub" href="#setup-checkpoint" data-parent="setup">Checkpoint: regtest is empty</a>
+        <a class="nav-sub" href="#setup-confirm-regtest" data-parent="setup">Confirm regtest is empty</a>
       </div>
       <a class="nav-main" href="#datadir-tour" data-group="datadir"><span>05</span>Inside the data directory</a>
-      <a class="nav-main" href="#wallet-overview" data-group="wallet"><span>06</span>Wallet basics</a>
+      <a class="nav-main" href="#regtest-mining" data-group="regtest-mining"><span>06</span>Mining in regtest</a>
+      <a class="nav-main" href="#wallet-overview" data-group="wallet"><span>07</span>Wallet basics</a>
       <div class="nav-subgroup" aria-label="Wallet">
         <a class="nav-sub" href="#wallet-rpc-basics" data-parent="wallet">Create and load wallets</a>
+        <a class="nav-sub" href="#wallet-getbalances" data-parent="wallet">Wallet balances</a>
+        <a class="nav-sub" href="#wallet-listunspent" data-parent="wallet">Spendable outputs</a>
         <a class="nav-sub" href="#wallet-sendtoaddress" data-parent="wallet">Sending: the easy way</a>
         <a class="nav-sub" href="#wallet-send" data-parent="wallet">Sending: more control</a>
         <a class="nav-sub" href="#wallet-raw-transactions" data-parent="wallet">Sending: raw transactions</a>
       </div>
-      <a class="nav-main" href="#wallet-exercise-goal" data-group="wallet-exercise"><span>07</span>Exercise 01: wallet operations</a>
+      <a class="nav-main" href="#wallet-exercise-goal" data-group="wallet-exercise"><span>08</span>Exercise 01: wallet operations</a>
       <div class="nav-subgroup" aria-label="Exercise 01 wallet operations">
         <a class="nav-sub" href="#wallet-exercise-create" data-parent="wallet-exercise">Create a wallet</a>
         <a class="nav-sub" href="#wallet-exercise-fund" data-parent="wallet-exercise">Fund your wallet</a>
         <a class="nav-sub" href="#wallet-exercise-send" data-parent="wallet-exercise">Send to another address</a>
         <a class="nav-sub" href="#wallet-exercise-inspect" data-parent="wallet-exercise">Inspect the transaction</a>
         <a class="nav-sub" href="#wallet-exercise-confirm" data-parent="wallet-exercise">Confirm the transaction</a>
+        <a class="nav-sub" href="#wallet-exercise-bonus" data-parent="wallet-exercise">Bonus question</a>
       </div>
-      <a class="nav-main" href="#wallet-evolution" data-group="wallet-evolution"><span>08</span>Wallet evolution</a>
+      <a class="nav-main" href="#wallet-evolution" data-group="wallet-evolution"><span>09</span>Wallet evolution</a>
       <div class="nav-subgroup" aria-label="Wallet evolution">
         <a class="nav-sub" href="#wallet-legacy" data-parent="wallet-evolution">Legacy wallet.dat</a>
         <a class="nav-sub" href="#wallet-hd" data-parent="wallet-evolution">HD wallets</a>
@@ -101,20 +104,9 @@
       <ul class="area-list">
         <li>Direct descendant of the original Bitcoin software released by Satoshi Nakamoto</li>
         <li>Includes full-node software for fully validating the blockchain</li>
-        <li>Also includes a Bitcoin wallet, GUI, RPC interface, tests, indexes, and command-line tools</li>
+        <li>Development happens publicly at <a href="https://github.com/bitcoin/bitcoin">github.com/bitcoin/bitcoin</a></li>
         <li>Mostly C++, with Python tests and developer tooling around it</li>
       </ul>
-    </section>
-
-    <section id="node-jobs" class="slide area-slide">
-      <h2>What a full node does</h2>
-      <p class="area-intro">From the outside, a Bitcoin Core node is software that finds peers, receives Bitcoin data, verifies it locally, stores the state it needs, and relays accepted data.</p>
-      <div class="job-grid">
-        <div><span>1</span><p>Connects to peers and downloads blocks and transactions</p></div>
-        <div><span>2</span><p>Checks blocks and transactions before accepting them</p></div>
-        <div><span>3</span><p>Maintains its view of the active chain and current UTXO set</p></div>
-        <div><span>4</span><p>Keeps a local mempool of unconfirmed transactions and relays data to peers</p></div>
-      </div>
     </section>
 
     <section id="development" class="slide area-slide archived" data-archived="true">
@@ -413,7 +405,7 @@
 
     <section id="setup-goal" class="slide area-slide">
       <h2>Exercise 0: setup</h2>
-      <p class="exercise-copy">In this exercise we set up a small, disposable Bitcoin Core workspace. We download the command-line binaries, create a data directory just for regtest, start <code>bitcoind</code>, and use <code>bitcoin-cli</code> to prove the node is reachable.</p>
+      <p class="exercise-copy">The first exercise sets up the environment we'll use throughout the workshop. We download the Bitcoin Core command-line binaries, create a data directory just for regtest, start the node daemon <code>bitcoind</code>, and use <code>bitcoin-cli</code> to prove the node is reachable.</p>
       <div class="file-panel">
         <div>
           <code>Time</code>
@@ -428,7 +420,7 @@
 
     <section id="setup-workshop-dir" class="slide area-slide">
       <h2>Create the workshop directory</h2>
-      <p class="exercise-copy">Start by creating one folder for the whole exercise. Keeping the binaries, configuration, and test data together makes the commands easier to follow and makes cleanup simple after the workshop.</p>
+      <p class="exercise-copy">Start by creating one folder for the whole workshop. We will work inside this directory throughout the session, and keep all the binaries, configuration, and test data here. This makes the commands easier to follow and makes cleanup simple after the workshop.</p>
       <div class="os-code">
         <div class="os-tabs" aria-label="Operating system">
           <button type="button" data-os-select="mac">macOS</button>
@@ -455,8 +447,8 @@ Set-Location planb-core-workshop</code></pre>
 
     <section id="setup-download" class="slide area-slide">
       <h2>Download Bitcoin Core</h2>
-      <p class="exercise-copy">Usually people go to <code>bitcoincore.org/download</code>, but that page is aimed at installing the GUI app. In this workshop we are trying Bitcoin Core from the terminal, so we download the archive files from <code>bitcoincore.org/bin</code> instead.</p>
-      <p class="exercise-copy">Choose the command for your operating system. On macOS, pick the tab that matches your chip.</p>
+      <p class="exercise-copy">Usually people download Bitcoin Core from <code>bitcoincore.org/download</code>, but that page is aimed at installing the GUI app. In this workshop we are trying Bitcoin Core from the terminal, so we download the archive files from <code>bitcoincore.org/bin</code> instead.</p>
+      <p class="exercise-copy">Choose the command for your operating system.</p>
       <div class="step-block">
         <div class="os-code">
           <div class="os-tabs" aria-label="Download target">
@@ -487,7 +479,7 @@ Set-Location planb-core-workshop</code></pre>
 
     <section id="setup-unpack" class="slide area-slide">
       <h2>Unpack and prepare the binaries</h2>
-      <p class="exercise-copy">The archive contains the Bitcoin Core programs and support files. First unpack it, then copy only <code>bitcoind</code> and <code>bitcoin-cli</code> into the workshop directory root so the rest of the commands stay short.</p>
+      <p class="exercise-copy">The archive we just downloaded contains the Bitcoin Core programs and support files. First unpack it, then copy only the <code>bitcoind</code> and <code>bitcoin-cli</code> binaries into the workshop directory root. This way, the rest of the commands stay short.</p>
       <div class="step-block">
         <div class="os-code">
           <div class="os-tabs" aria-label="Download target">
@@ -511,7 +503,6 @@ Set-Location planb-core-workshop</code></pre>
         </div>
       </div>
       <div class="step-block">
-        <p class="step-label">Put <code>bitcoind</code> and <code>bitcoin-cli</code> in the workshop directory root so later commands stay short.</p>
         <div class="os-code">
           <div class="os-tabs" aria-label="Operating system">
             <button type="button" data-os-select="mac">macOS</button>
@@ -540,7 +531,7 @@ Copy-Item .\bitcoin-31.0\bin\bitcoin-cli.exe .</code></pre>
 
     <section id="setup-version" class="slide area-slide">
       <h2>Check the binaries</h2>
-      <p class="exercise-copy">Before starting a node, check that both local programs run. <code>bitcoind</code> is the node process, and <code>bitcoin-cli</code> is the client we will use to send commands to it.</p>
+      <p class="exercise-copy">Before starting a node, check that both local programs run. <code>bitcoind</code> is the node process, and <code>bitcoin-cli</code> is the client we will use to send commands to it. Both should print the version.</p>
       <div class="step-block">
         <div class="os-code">
           <div class="os-tabs" aria-label="Operating system">
@@ -597,7 +588,7 @@ Copyright (C) 2009-2026 The Bitcoin Core developers</code></pre>
 
     <section id="setup-config" class="slide area-slide">
       <h2>Create <code>bitcoin.conf</code></h2>
-      <p class="exercise-copy"><code>bitcoin.conf</code> tells Bitcoin Core how to start. Put it inside <code>bitcoind-datadir</code> so these settings apply only to this workshop node.</p>
+      <p class="exercise-copy">Bitcoin Core configuration is stored in <code>bitcoin.conf</code>. We create this file inside <code>bitcoind-datadir</code> so these settings apply only to this workshop node, then add the setting that runs the node in regtest.</p>
       <div class="os-code">
         <div class="os-tabs" aria-label="Operating system">
           <button type="button" data-os-select="mac">macOS</button>
@@ -614,12 +605,7 @@ Copyright (C) 2009-2026 The Bitcoin Core developers</code></pre>
           <pre class="code"><code>notepad bitcoind-datadir\bitcoin.conf</code></pre>
         </div>
       </div>
-      <pre class="code"><code>regtest=1
-listen=0</code></pre>
-      <div class="callout expected">
-        <h3>What these options mean</h3>
-        <p><code>regtest=1</code> means local private chain. <code>listen=0</code> means no incoming peer connections.</p>
-      </div>
+      <pre class="code"><code>regtest=1</code></pre>
     </section>
 
     <section id="setup-start" class="slide area-slide">
@@ -644,13 +630,16 @@ listen=0</code></pre>
       </div>
       <div class="callout expected">
         <h3>What to look for</h3>
-        <p>Leave this terminal open while the node runs. Look for <code>Using data directory .../bitcoind-datadir/regtest</code>, <code>Config file arg: regtest="1"</code>, and <code>Done loading</code>.</p>
+        <p>Leave this terminal open while the node runs. In the log output, look for these lines:</p>
+        <pre class="code"><code>Using data directory /path/to/directory/planb-core-workshop/bitcoind-datadir/regtest
+Config file arg: regtest="1"
+Done loading</code></pre>
       </div>
     </section>
 
     <section id="setup-daemon" class="slide area-slide">
       <h2>Run in the background</h2>
-      <p class="exercise-copy">After confirming that startup works, run the node in a way that leaves your terminal available. On macOS and Linux we can use daemon mode. On Windows, keep the node running in one terminal and use a second terminal for <code>bitcoin-cli</code>.</p>
+      <p class="exercise-copy">After confirming that startup works, run the node in a way that leaves your terminal available. On macOS and Linux, we can run it in daemon mode. On Windows, keep the node running in one terminal and use a second terminal for <code>bitcoin-cli</code>.</p>
       <div class="file-panel">
         <div>
           <code>macOS / Linux</code>
@@ -661,24 +650,20 @@ listen=0</code></pre>
           <span><code>daemon=1</code> is not supported. Keep <code>bitcoin.conf</code> unchanged and run <code>bitcoind</code> in a separate terminal.</span>
         </div>
       </div>
-      <p class="step-label">For macOS and Linux, <code>bitcoin.conf</code> should now contain:</p>
+      <p class="exercise-copy config-followup">For macOS and Linux, modify <code>bitcoin.conf</code> so it now contains:</p>
       <pre class="code"><code>regtest=1
-listen=0
 daemon=1</code></pre>
+      <p class="exercise-copy">Now start the node again. This time it should return control to your terminal after startup.</p>
       <div class="os-code">
         <div class="os-tabs" aria-label="Operating system">
           <button type="button" data-os-select="mac">macOS</button>
           <button type="button" data-os-select="linux">Linux</button>
-          <button type="button" data-os-select="windows">Windows</button>
         </div>
         <div class="os-pane" data-os-pane="mac">
           <pre class="code"><code>./bitcoind -datadir=bitcoind-datadir</code></pre>
         </div>
         <div class="os-pane" data-os-pane="linux">
           <pre class="code"><code>./bitcoind -datadir=bitcoind-datadir</code></pre>
-        </div>
-        <div class="os-pane" data-os-pane="windows">
-          <pre class="code"><code>Start-Process -FilePath .\bitcoind.exe -ArgumentList "-datadir=bitcoind-datadir"</code></pre>
         </div>
       </div>
     </section>
@@ -735,9 +720,9 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
       </div>
     </section>
 
-    <section id="setup-checkpoint" class="slide area-slide">
-      <h2>Checkpoint: regtest is empty</h2>
-      <p class="exercise-copy">This is the checkpoint for Exercise 0. Run <code>getblockchaininfo</code> and confirm that the node is on <code>regtest</code>.</p>
+    <section id="setup-confirm-regtest" class="slide area-slide">
+      <h2>Confirm regtest is empty</h2>
+      <p class="exercise-copy">To finish Exercise 0, run <code>getblockchaininfo</code> and confirm that the node is on <code>regtest</code>.</p>
       <p class="exercise-copy">A fresh regtest chain starts empty, so the block and header counts should both be zero.</p>
       <div class="os-code">
         <div class="os-tabs" aria-label="Operating system">
@@ -764,7 +749,6 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
     <section id="datadir-tour" class="slide area-slide">
       <h2>Inside the data directory</h2>
       <p class="exercise-copy">After the node starts once, <code>bitcoind-datadir</code> is no longer just an empty folder. It contains configuration, settings, logs, and the regtest chain state created by Bitcoin Core.</p>
-      <p class="exercise-copy">This quick directory tour shows where that local node state lives.</p>
       <div class="callout expected">
         <h3>Note</h3>
         <p>Use <code>ls -l</code> so hidden lock and cookie files do not distract from the main pieces.</p>
@@ -787,6 +771,17 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
 -rw-------   1 alice  staff  247985 Jun 16 10:18 fee_estimates.dat
 -rw-------   1 alice  staff      27 Jun 16 10:18 mempool.dat
 -rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat</code></pre>
+    </section>
+
+    <section id="regtest-mining" class="slide area-slide">
+      <h2>Mining in regtest</h2>
+      <p class="exercise-copy">On mainnet, miners compete to create blocks. In regtest there are no external miners and no network competition, so blocks only appear when we create them ourselves.</p>
+      <p class="exercise-copy">Bitcoin Core gives us the <code>generatetoaddress</code> RPC for this. It creates new block templates, solves them immediately in regtest, and sends each block's coinbase reward to the address we provide.</p>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
+      <div class="callout expected">
+        <h3>Coinbase maturity</h3>
+        <p>The block reward is a coinbase output. Coinbase outputs cannot be spent immediately; they must be buried under 100 more blocks before they become spendable.</p>
+      </div>
     </section>
 
     <section id="wallet-overview" class="slide area-slide">
@@ -854,6 +849,50 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <p class="step-label">Once a wallet is loaded, scope later commands with <code>-rpcwallet=&lt;name&gt;</code>, or let Bitcoin Core use the default when only one wallet is loaded.</p>
     </section>
 
+    <section id="wallet-getbalances" class="slide area-slide">
+      <h2>Wallet balances</h2>
+      <p class="area-intro"><code>getbalances</code> summarizes how much money the wallet currently controls, grouped by wallet state.</p>
+      <div class="file-panel">
+        <div>
+          <code>mine.trusted</code>
+          <span>Confirmed wallet balance that Bitcoin Core considers safe to spend.</span>
+        </div>
+        <div>
+          <code>mine.untrusted_pending</code>
+          <span>Incoming or change outputs from unconfirmed transactions.</span>
+        </div>
+        <div>
+          <code>mine.immature</code>
+          <span>Coinbase rewards that belong to the wallet but are not yet 100 blocks deep.</span>
+        </div>
+      </div>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir -rpcwallet=&lt;name&gt; getbalances</code></pre>
+    </section>
+
+    <section id="wallet-listunspent" class="slide area-slide">
+      <h2>Spendable outputs</h2>
+      <p class="area-intro"><code>listunspent</code> shows the wallet's individual unspent transaction outputs. These are the specific coins Bitcoin Core can choose from when building a transaction.</p>
+      <div class="file-panel">
+        <div>
+          <code>txid / vout</code>
+          <span>The exact outpoint identifying the coin.</span>
+        </div>
+        <div>
+          <code>amount</code>
+          <span>How much bitcoin that output is worth.</span>
+        </div>
+        <div>
+          <code>confirmations</code>
+          <span>How deep the output is in the chain.</span>
+        </div>
+        <div>
+          <code>spendable</code>
+          <span>Whether the wallet has what it needs to spend that output.</span>
+        </div>
+      </div>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir -rpcwallet=&lt;name&gt; listunspent</code></pre>
+    </section>
+
     <section id="wallet-sendtoaddress" class="slide area-slide">
       <h2>Sending: the easy way</h2>
       <p class="area-intro"><code>sendtoaddress</code> sends to one address. Bitcoin Core handles coin selection, change, and fee estimation automatically, then returns a txid.</p>
@@ -918,12 +957,23 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
 
     <section id="wallet-exercise-goal" class="slide area-slide">
       <h2>Exercise 01: wallet operations</h2>
-      <p class="area-intro">In this exercise we will create a wallet and do basic operations with it: mine blocks to it, send coins to another address, check balances, inspect the transaction, and confirm it.</p>
+      <p class="exercise-copy">In this exercise we use the regtest node from Exercise 0 and focus on wallet operations. We create a wallet, mine blocks to fund it, send coins to another address, inspect the transaction, and confirm it with a new block.</p>
+      <p class="exercise-copy">The goal is to see the wallet workflow end to end: receive, spend, inspect, and confirm.</p>
+      <div class="file-panel">
+        <div>
+          <code>Time</code>
+          <span>15 min</span>
+        </div>
+        <div>
+          <code>Goal</code>
+          <span>Move coins using <code>sendtoaddress</code></span>
+        </div>
+      </div>
     </section>
 
     <section id="wallet-exercise-create" class="slide area-slide">
       <h2>Create a wallet</h2>
-      <p class="area-intro">Use <code>bitcoin-cli createwallet</code> to create a new named wallet.</p>
+      <p class="exercise-copy">Start by creating a named wallet. Bitcoin Core keeps wallets separate from the node's chain data, so creating a wallet gives us a place to generate addresses, receive mined coins, and sign transactions.</p>
       <p class="file-panel-label">Command hints:</p>
       <div class="file-panel">
         <div>
@@ -939,7 +989,8 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
 
     <section id="wallet-exercise-fund" class="slide area-slide">
       <h2>Fund your wallet</h2>
-      <p class="area-intro">To get coins in regtest, you need to mine blocks. Generate a receiving address with <code>bitcoin-cli getnewaddress</code>, then use <code>bitcoin-cli generatetoaddress</code> to mine blocks to that address. You need 100 blocks before coinbase rewards become spendable.</p>
+      <p class="exercise-copy">To get coins in regtest, mine blocks to an address from your wallet. First generate a receiving address with <code>getnewaddress</code>, then pass that address to <code>generatetoaddress</code>.</p>
+      <p class="exercise-copy">The mining reward is a coinbase output, so it is not spendable immediately. Mine enough blocks for the reward to become 100 blocks deep before spending it.</p>
       <p class="file-panel-label">Command hints:</p>
       <div class="file-panel">
         <div>
@@ -955,39 +1006,37 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>See your wallet balance.</span>
         </div>
       </div>
-      <div class="callout expected">
-        <h3>Bonus question</h3>
-        <p>Where is the 100-block coinbase maturity limit defined, and where is it enforced? Look for the constant in <code>src/consensus/consensus.h</code>, then use GitHub search to see where the variable is used.</p>
-      </div>
     </section>
 
     <section id="wallet-exercise-send" class="slide area-slide">
       <h2>Send to another address</h2>
-      <p class="area-intro">Generate a second address, then use <code>bitcoin-cli sendtoaddress</code> to send some coins to it. Note the txid returned.</p>
-      <p class="file-panel-label">Command hints:</p>
+      <p class="exercise-copy">Next, create a destination address and send some coins to it. In regtest this can be another address from the same wallet; the point is to create a real transaction and watch how the wallet state changes.</p>
+      <p class="exercise-copy">Before sending, use <code>getbalances</code> to check that the wallet has mature coins available. Then send with <code>sendtoaddress</code> and check the mempool to see that the transaction is waiting to be mined.</p>
+      <p class="file-panel-label">Suggested flow:</p>
       <div class="file-panel">
         <div>
+          <code>getbalances</code>
+          <span>Check that <code>mine.trusted</code> has spendable balance.</span>
+        </div>
+        <div>
           <code>getnewaddress</code>
-          <span>Generate the destination address.</span>
+          <span>Generate the destination address for the payment.</span>
         </div>
         <div>
           <code>sendtoaddress</code>
           <span>Send coins and save the txid returned by the wallet.</span>
         </div>
         <div>
-          <code>getbalances</code>
-          <span>Check your balance again. What changed?</span>
-        </div>
-        <div>
           <code>getrawmempool</code>
-          <span>Confirm the transaction is waiting in the mempool.</span>
+          <span>Check that the new transaction is waiting in the mempool.</span>
         </div>
       </div>
+      <p class="exercise-copy panel-followup"><code>sendtoaddress</code> returns a transaction id. Keep that txid so you can inspect the transaction in the next step.</p>
     </section>
 
     <section id="wallet-exercise-inspect" class="slide area-slide">
       <h2>Inspect the transaction</h2>
-      <p class="area-intro">Use <code>bitcoin-cli gettransaction &lt;txid&gt;</code> to examine the details.</p>
+      <p class="exercise-copy">Use <code>gettransaction</code> with the txid from the previous step to examine the wallet's view of the transaction. This shows whether the transaction is confirmed, how much it changed the wallet balance, and other wallet-specific details.</p>
       <p class="file-panel-label">Command hints:</p>
       <div class="file-panel">
         <div>
@@ -995,15 +1044,11 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Inspect the wallet's view of the transaction.</span>
         </div>
       </div>
-      <div class="callout expected">
-        <h3>Question</h3>
-        <p>Can you identify the change output?</p>
-      </div>
     </section>
 
     <section id="wallet-exercise-confirm" class="slide area-slide">
       <h2>Confirm the transaction</h2>
-      <p class="area-intro">Mine a block to confirm your transaction, then check your balance again.</p>
+      <p class="exercise-copy">The transaction is unconfirmed until it is included in a block. Mine one more regtest block, then use <code>getrawmempool</code> to check that the txid is no longer waiting in the mempool.</p>
       <p class="file-panel-label">Command hints:</p>
       <div class="file-panel">
         <div>
@@ -1011,9 +1056,18 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Mine one block to confirm the transaction.</span>
         </div>
         <div>
-          <code>getbalances</code>
-          <span>Check your balance after confirmation.</span>
+          <code>getrawmempool</code>
+          <span>Confirm the txid is no longer in the mempool.</span>
         </div>
+      </div>
+    </section>
+
+    <section id="wallet-exercise-bonus" class="slide area-slide">
+      <h2>Bonus question</h2>
+      <p class="exercise-copy">Coinbase rewards cannot be spent until they are 100 blocks deep. Where is that maturity limit defined in the Bitcoin Core codebase, and where is it enforced?</p>
+      <div class="callout expected">
+        <h3>Starting point</h3>
+        <p>Look for the constant in <code>src/consensus/consensus.h</code>, then use GitHub search to see where the variable is used.</p>
       </div>
     </section>
 

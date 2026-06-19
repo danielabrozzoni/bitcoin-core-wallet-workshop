@@ -53,9 +53,7 @@
         <a class="nav-sub" href="#node-cli-help" data-parent="setup">Getting help</a>
         <a class="nav-sub" href="#setup-confirm-regtest" data-parent="setup">Confirm regtest is empty</a>
       </div>
-      <a class="nav-main" href="#datadir-tour" data-group="datadir"><span>05</span>Inside the data directory</a>
-      <a class="nav-main" href="#regtest-mining" data-group="regtest-mining"><span>06</span>Mining in regtest</a>
-      <a class="nav-main" href="#wallet-overview" data-group="wallet"><span>07</span>Wallet basics</a>
+      <a class="nav-main" href="#wallet-overview" data-group="wallet"><span>05</span>Wallet basics</a>
       <div class="nav-subgroup" aria-label="Wallet">
         <a class="nav-sub" href="#wallet-rpc-basics" data-parent="wallet">Create and load wallets</a>
         <a class="nav-sub" href="#wallet-getbalances" data-parent="wallet">Wallet balances</a>
@@ -64,6 +62,8 @@
         <a class="nav-sub" href="#wallet-send" data-parent="wallet">Sending: more control</a>
         <a class="nav-sub" href="#wallet-raw-transactions" data-parent="wallet">Sending: raw transactions</a>
       </div>
+      <a class="nav-main" href="#regtest-mining" data-group="regtest-mining"><span>06</span>Mining in regtest</a>
+      <a class="nav-main" href="#datadir-tour" data-group="datadir"><span>07</span>Inside the data directory</a>
       <a class="nav-main" href="#wallet-exercise-goal" data-group="wallet-exercise"><span>08</span>Exercise 01: wallet operations</a>
       <div class="nav-subgroup" aria-label="Exercise 01 wallet operations">
         <a class="nav-sub" href="#wallet-exercise-create" data-parent="wallet-exercise">Create a wallet</a>
@@ -79,6 +79,7 @@
         <a class="nav-sub" href="#wallet-legacy" data-parent="wallet-evolution">Legacy wallet.dat</a>
         <a class="nav-sub" href="#wallet-hd" data-parent="wallet-evolution">HD wallets</a>
         <a class="nav-sub" href="#wallet-scripts" data-parent="wallet-evolution">Keys are not scripts</a>
+        <a class="nav-sub" href="#wallet-script-examples" data-parent="wallet-evolution">Script examples</a>
         <a class="nav-sub" href="#wallet-descriptors" data-parent="wallet-evolution">Descriptor model</a>
         <a class="nav-sub" href="#wallet-taproot-descriptor" data-parent="wallet-evolution">Complex script</a>
         <a class="nav-sub" href="#wallet-backups" data-parent="wallet-evolution">Backups vs BIP39</a>
@@ -126,24 +127,12 @@
 
     <section id="project-technical" class="slide area-slide">
       <h2>What does it do technically?</h2>
-      <div class="technical-rows">
-        <div>
-          <strong>Validates independently</strong>
-          <span>Downloads blocks and verifies proof of work, transactions, scripts, and consensus rules.</span>
-        </div>
-        <div>
-          <strong>Maintains local state</strong>
-          <span>Stores the blockchain, tracks the UTXO set, and manages the mempool.</span>
-        </div>
-        <div>
-          <strong>Participates in P2P</strong>
-          <span>Connects to peers and relays valid transactions and blocks.</span>
-        </div>
-        <div>
-          <strong>Provides interfaces</strong>
-          <span>Exposes RPC/REST APIs and includes an optional wallet.</span>
-        </div>
-      </div>
+      <ul class="area-list">
+        <li><strong>Validates Bitcoin independently:</strong> downloads blocks and verifies proof of work, transactions, scripts, and consensus rules.</li>
+        <li><strong>Maintains local state:</strong> stores the blockchain, tracks the UTXO set, and manages the mempool.</li>
+        <li><strong>Participates in the P2P network:</strong> connects to peers and relays valid transactions and blocks.</li>
+        <li><strong>Provides developer interfaces:</strong> exposes RPC/REST APIs and includes an optional wallet.</li>
+      </ul>
     </section>
 
     <section id="development" class="slide area-slide">
@@ -154,7 +143,6 @@
         <li>Anyone can propose a code change by opening a pull request</li>
         <li>Anyone can review other people's pull requests and leave technical feedback</li>
         <li>Review is how contributors discuss behavior, safety, maintainability, compatibility, and whether a change is worth making</li>
-        <li>Changes to validation, wallet, and P2P code tend to be reviewed especially carefully</li>
       </ul>
     </section>
 
@@ -183,39 +171,7 @@
     <section id="map" class="slide area-slide">
       <h2>Code map</h2>
       <p class="area-intro">A practical way to read the repository is to separate the node engine from the interfaces and the project support code around it.</p>
-      <div class="code-map">
-        <div class="code-map-column">
-          <h3>Node engine</h3>
-          <p>The code that validates Bitcoin data, tracks node state, and communicates with peers.</p>
-          <div class="path-grid">
-            <code>validation</code>
-            <code>chainstate</code>
-            <code>mempool</code>
-            <code>P2P</code>
-          </div>
-        </div>
-        <div class="code-map-column">
-          <h3>Interfaces and features</h3>
-          <p>The ways users, applications, and optional components interact with the node.</p>
-          <div class="path-grid">
-            <code>RPC</code>
-            <code>GUI</code>
-            <code>wallet</code>
-            <code>indexes</code>
-            <code>ZMQ</code>
-          </div>
-        </div>
-        <div class="code-map-column">
-          <h3>Project support</h3>
-          <p>The surrounding code that makes Bitcoin Core buildable, testable, releasable, and maintainable.</p>
-          <div class="path-grid">
-            <code>tests</code>
-            <code>tools</code>
-            <code>benchmarks</code>
-            <code>lint</code>
-          </div>
-        </div>
-      </div>
+      <img class="code-map-image" src="images/ChatGPT%20Image%20Jun%2019%2C%202026%2C%2010_08_59%20PM.png" alt="Illustrated code map showing validation, chainstate, mempool, P2P, and wallet along a path">
     </section>
 
     <section id="consensus" class="slide area-slide">
@@ -758,44 +714,6 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
       </div>
     </section>
 
-    <section id="datadir-tour" class="slide area-slide">
-      <h2>Inside the data directory</h2>
-      <p class="exercise-copy">After the node starts once, <code>bitcoind-datadir</code> is no longer just an empty folder. It contains configuration, settings, logs, and the regtest chain state created by Bitcoin Core.</p>
-      <div class="callout expected">
-        <h3>Note</h3>
-        <p>Use <code>ls -l</code> so hidden lock and cookie files do not distract from the main pieces.</p>
-      </div>
-      <pre class="code"><code>ls -l bitcoind-datadir
-
-total 16
--rw-r--r--   1 alice  staff    28 Jun 16 10:15 bitcoin.conf
-drwx------   8 alice  staff   256 Jun 16 10:18 regtest
--rw-------   1 alice  staff   193 Jun 16 10:18 settings.json
-
-ls -l bitcoind-datadir/regtest
-
-total 13264
--rw-------   1 alice  staff      75 Jun 16 10:18 anchors.dat
--rw-------   1 alice  staff     221 Jun 16 10:18 banlist.json
-drwx------   4 alice  staff     128 Jun 16 10:18 blocks
-drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
--rw-------   1 alice  staff  932824 Jun 16 10:18 debug.log
--rw-------   1 alice  staff  247985 Jun 16 10:18 fee_estimates.dat
--rw-------   1 alice  staff      27 Jun 16 10:18 mempool.dat
--rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat</code></pre>
-    </section>
-
-    <section id="regtest-mining" class="slide area-slide">
-      <h2>Mining in regtest</h2>
-      <p class="exercise-copy">On mainnet, miners compete to create blocks. In regtest there are no external miners and no network competition, so blocks only appear when we create them ourselves.</p>
-      <p class="exercise-copy">Bitcoin Core gives us the <code>generatetoaddress</code> RPC for this. It creates new block templates, solves them immediately in regtest, and sends each block's coinbase reward to the address we provide.</p>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
-      <div class="callout expected">
-        <h3>Coinbase maturity</h3>
-        <p>The block reward is a coinbase output. Coinbase outputs cannot be spent immediately; they must be buried under 100 more blocks before they become spendable.</p>
-      </div>
-    </section>
-
     <section id="wallet-overview" class="slide area-slide">
       <h2>Wallet basics</h2>
       <p class="area-intro">The Bitcoin Core wallet has the following general aims:</p>
@@ -965,6 +883,44 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
         </div>
       </div>
       <p class="step-label">Use <code>decoderawtransaction &lt;hex&gt;</code> at any point to inspect what you have built.</p>
+    </section>
+
+    <section id="regtest-mining" class="slide area-slide">
+      <h2>Mining in regtest</h2>
+      <p class="exercise-copy">On mainnet, miners compete to create blocks. In regtest there are no external miners and no network competition, so blocks only appear when we create them ourselves.</p>
+      <p class="exercise-copy">Bitcoin Core gives us the <code>generatetoaddress</code> RPC for this. It creates new block templates, solves them immediately in regtest, and sends each block's coinbase reward to the address we provide.</p>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
+      <div class="callout expected">
+        <h3>Coinbase maturity</h3>
+        <p>The block reward is a coinbase output. Coinbase outputs cannot be spent immediately; they must be buried under 100 more blocks before they become spendable.</p>
+      </div>
+    </section>
+
+    <section id="datadir-tour" class="slide area-slide">
+      <h2>Inside the data directory</h2>
+      <p class="exercise-copy">After the node starts once, <code>bitcoind-datadir</code> is no longer just an empty folder. It contains configuration, settings, logs, and the regtest chain state created by Bitcoin Core.</p>
+      <div class="callout expected">
+        <h3>Note</h3>
+        <p>Use <code>ls -l</code> so hidden lock and cookie files do not distract from the main pieces.</p>
+      </div>
+      <pre class="code"><code>ls -l bitcoind-datadir
+
+total 16
+-rw-r--r--   1 alice  staff    28 Jun 16 10:15 bitcoin.conf
+drwx------   8 alice  staff   256 Jun 16 10:18 regtest
+-rw-------   1 alice  staff   193 Jun 16 10:18 settings.json
+
+ls -l bitcoind-datadir/regtest
+
+total 13264
+-rw-------   1 alice  staff      75 Jun 16 10:18 anchors.dat
+-rw-------   1 alice  staff     221 Jun 16 10:18 banlist.json
+drwx------   4 alice  staff     128 Jun 16 10:18 blocks
+drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
+-rw-------   1 alice  staff  932824 Jun 16 10:18 debug.log
+-rw-------   1 alice  staff  247985 Jun 16 10:18 fee_estimates.dat
+-rw-------   1 alice  staff      27 Jun 16 10:18 mempool.dat
+-rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat</code></pre>
     </section>
 
     <section id="wallet-exercise-goal" class="slide area-slide">
@@ -1218,6 +1174,40 @@ OP_EQUALVERIFY OP_CHECKSIG</code></pre>
             <h3>P2WPKH</h3>
             <pre><code>OP_0
 &lt;20-byte HASH160(pubkey)&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="wallet-script-examples" class="slide area-slide">
+      <h2>Keys are not scripts</h2>
+      <p class="area-intro">The same public keys can appear in different spending policies, and those policies can be encoded differently depending on the output type: P2SH, P2WSH, or Taproot.</p>
+      <div class="script-fanout" aria-label="Public keys used in multiple Bitcoin script policies">
+        <div class="script-key">
+          <strong>public keys</strong>
+          <code>&lt;pubkey A&gt;</code>
+          <code>&lt;pubkey B&gt;</code>
+          <code>&lt;pubkey C&gt;</code>
+        </div>
+        <div class="wallet-arrow">&rarr;</div>
+        <div class="script-templates">
+          <div>
+            <h3>P2SH / P2WSH 2-of-3 multisig</h3>
+            <pre><code>2 &lt;pubkey A&gt; &lt;pubkey B&gt; &lt;pubkey C&gt; 3 OP_CHECKMULTISIG</code></pre>
+          </div>
+          <div>
+            <h3>Taproot script-path 2-of-3</h3>
+            <pre><code>&lt;pubkey A&gt; OP_CHECKSIG
+&lt;pubkey B&gt; OP_CHECKSIGADD
+&lt;pubkey C&gt; OP_CHECKSIGADD
+2 OP_NUMEQUAL</code></pre>
+          </div>
+          <div>
+            <h3>Taproot key-path aggregate spend</h3>
+            <pre><code>&lt;x-only aggregate key&gt;
+
+MuSig-style: one key on chain,
+many keys in the signing policy</code></pre>
           </div>
         </div>
       </div>

@@ -53,18 +53,18 @@
         <a class="nav-sub" href="#node-cli-help" data-parent="setup">Getting help</a>
         <a class="nav-sub" href="#setup-confirm-regtest" data-parent="setup">Confirm regtest is empty</a>
       </div>
-      <a class="nav-main" href="#wallet-overview" data-group="wallet"><span>05</span>Wallet basics</a>
+      <a class="nav-main" href="#datadir-tour" data-group="datadir"><span>05</span>Inside the data directory</a>
+      <a class="nav-main" href="#wallet-overview" data-group="wallet"><span>06</span>Wallet basics</a>
       <div class="nav-subgroup" aria-label="Wallet">
         <a class="nav-sub" href="#wallet-rpc-basics" data-parent="wallet">Create and load wallets</a>
+        <a class="nav-sub" href="#regtest-mining" data-parent="wallet">Mining in regtest</a>
         <a class="nav-sub" href="#wallet-getbalances" data-parent="wallet">Wallet balances</a>
         <a class="nav-sub" href="#wallet-listunspent" data-parent="wallet">Spendable outputs</a>
         <a class="nav-sub" href="#wallet-sendtoaddress" data-parent="wallet">Sending: the easy way</a>
         <a class="nav-sub" href="#wallet-send" data-parent="wallet">Sending: more control</a>
         <a class="nav-sub" href="#wallet-raw-transactions" data-parent="wallet">Sending: raw transactions</a>
       </div>
-      <a class="nav-main" href="#regtest-mining" data-group="regtest-mining"><span>06</span>Mining in regtest</a>
-      <a class="nav-main" href="#datadir-tour" data-group="datadir"><span>07</span>Inside the data directory</a>
-      <a class="nav-main" href="#wallet-exercise-goal" data-group="wallet-exercise"><span>08</span>Exercise 01: wallet operations</a>
+      <a class="nav-main" href="#wallet-exercise-goal" data-group="wallet-exercise"><span>07</span>Exercise 01: wallet operations</a>
       <div class="nav-subgroup" aria-label="Exercise 01 wallet operations">
         <a class="nav-sub" href="#wallet-exercise-create" data-parent="wallet-exercise">Create a wallet</a>
         <a class="nav-sub" href="#wallet-exercise-fund" data-parent="wallet-exercise">Fund your wallet</a>
@@ -73,8 +73,8 @@
         <a class="nav-sub" href="#wallet-exercise-confirm" data-parent="wallet-exercise">Confirm the transaction</a>
         <a class="nav-sub" href="#wallet-exercise-bonus" data-parent="wallet-exercise">Bonus question</a>
       </div>
-      <a class="nav-main" href="#raw-wallet-exercise-goal" data-group="raw-wallet-exercise"><span>09</span>Exercise 02: raw wallet operations</a>
-      <a class="nav-main" href="#wallet-evolution" data-group="wallet-evolution"><span>10</span>Wallet evolution</a>
+      <a class="nav-main" href="#raw-wallet-exercise-goal" data-group="raw-wallet-exercise"><span>08</span>Exercise 02: raw wallet operations</a>
+      <a class="nav-main" href="#wallet-evolution" data-group="wallet-evolution"><span>09</span>Wallet evolution</a>
       <div class="nav-subgroup" aria-label="Wallet evolution">
         <a class="nav-sub" href="#wallet-legacy" data-parent="wallet-evolution">Legacy wallet.dat</a>
         <a class="nav-sub" href="#wallet-hd" data-parent="wallet-evolution">HD wallets</a>
@@ -84,7 +84,7 @@
         <a class="nav-sub" href="#wallet-taproot-descriptor" data-parent="wallet-evolution">Complex script</a>
         <a class="nav-sub" href="#wallet-backups" data-parent="wallet-evolution">Backups vs BIP39</a>
       </div>
-      <a class="nav-main" href="#descriptor-exercise-goal" data-group="descriptor-exercise"><span>11</span>Exercise 03: inspect wallet descriptors</a>
+      <a class="nav-main" href="#descriptor-exercise-goal" data-group="descriptor-exercise"><span>10</span>Exercise 03: inspect wallet descriptors</a>
       <div class="nav-subgroup" aria-label="Exercise 03 inspect wallet descriptors">
         <a class="nav-sub" href="#descriptor-exercise-list" data-parent="descriptor-exercise">List descriptors</a>
         <a class="nav-sub" href="#descriptor-exercise-next-index" data-parent="descriptor-exercise">Watch next_index</a>
@@ -714,6 +714,33 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
       </div>
     </section>
 
+    <section id="datadir-tour" class="slide area-slide">
+      <h2>Inside the data directory</h2>
+      <p class="exercise-copy">After the node starts once, <code>bitcoind-datadir</code> is no longer just an empty folder. It contains configuration, settings, logs, and the regtest chain state created by Bitcoin Core.</p>
+      <div class="callout expected">
+        <h3>Note</h3>
+        <p>Use <code>ls -l</code> so hidden lock and cookie files do not distract from the main pieces.</p>
+      </div>
+      <pre class="code"><code>ls -l bitcoind-datadir
+
+total 16
+-rw-r--r--   1 alice  staff    28 Jun 16 10:15 bitcoin.conf
+drwx------   8 alice  staff   256 Jun 16 10:18 regtest
+-rw-------   1 alice  staff   193 Jun 16 10:18 settings.json
+
+ls -l bitcoind-datadir/regtest
+
+total 13264
+-rw-------   1 alice  staff      75 Jun 16 10:18 anchors.dat
+-rw-------   1 alice  staff     221 Jun 16 10:18 banlist.json
+drwx------   4 alice  staff     128 Jun 16 10:18 blocks
+drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
+-rw-------   1 alice  staff  932824 Jun 16 10:18 debug.log
+-rw-------   1 alice  staff  247985 Jun 16 10:18 fee_estimates.dat
+-rw-------   1 alice  staff      27 Jun 16 10:18 mempool.dat
+-rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat</code></pre>
+    </section>
+
     <section id="wallet-overview" class="slide area-slide">
       <h2>Wallet basics</h2>
       <p class="area-intro">The Bitcoin Core wallet has the following general aims:</p>
@@ -777,6 +804,17 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
         </table>
       </div>
       <p class="step-label">Once a single wallet is loaded, later wallet commands use it by default.</p>
+    </section>
+
+    <section id="regtest-mining" class="slide area-slide">
+      <h2>Mining in regtest</h2>
+      <p class="exercise-copy">On mainnet, miners compete to create blocks. In regtest there are no external miners and no network competition, so blocks only appear when we create them ourselves.</p>
+      <p class="exercise-copy">Bitcoin Core gives us the <code>generatetoaddress</code> RPC for this. It creates new block templates, solves them immediately in regtest, and sends each block's coinbase reward to the address we provide.</p>
+      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
+      <div class="callout expected">
+        <h3>Coinbase maturity</h3>
+        <p>The block reward is a coinbase output. Coinbase outputs cannot be spent immediately; they must be buried under 100 more blocks before they become spendable.</p>
+      </div>
     </section>
 
     <section id="wallet-getbalances" class="slide area-slide">
@@ -883,44 +921,6 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
         </div>
       </div>
       <p class="step-label">Use <code>decoderawtransaction &lt;hex&gt;</code> at any point to inspect what you have built.</p>
-    </section>
-
-    <section id="regtest-mining" class="slide area-slide">
-      <h2>Mining in regtest</h2>
-      <p class="exercise-copy">On mainnet, miners compete to create blocks. In regtest there are no external miners and no network competition, so blocks only appear when we create them ourselves.</p>
-      <p class="exercise-copy">Bitcoin Core gives us the <code>generatetoaddress</code> RPC for this. It creates new block templates, solves them immediately in regtest, and sends each block's coinbase reward to the address we provide.</p>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
-      <div class="callout expected">
-        <h3>Coinbase maturity</h3>
-        <p>The block reward is a coinbase output. Coinbase outputs cannot be spent immediately; they must be buried under 100 more blocks before they become spendable.</p>
-      </div>
-    </section>
-
-    <section id="datadir-tour" class="slide area-slide">
-      <h2>Inside the data directory</h2>
-      <p class="exercise-copy">After the node starts once, <code>bitcoind-datadir</code> is no longer just an empty folder. It contains configuration, settings, logs, and the regtest chain state created by Bitcoin Core.</p>
-      <div class="callout expected">
-        <h3>Note</h3>
-        <p>Use <code>ls -l</code> so hidden lock and cookie files do not distract from the main pieces.</p>
-      </div>
-      <pre class="code"><code>ls -l bitcoind-datadir
-
-total 16
--rw-r--r--   1 alice  staff    28 Jun 16 10:15 bitcoin.conf
-drwx------   8 alice  staff   256 Jun 16 10:18 regtest
--rw-------   1 alice  staff   193 Jun 16 10:18 settings.json
-
-ls -l bitcoind-datadir/regtest
-
-total 13264
--rw-------   1 alice  staff      75 Jun 16 10:18 anchors.dat
--rw-------   1 alice  staff     221 Jun 16 10:18 banlist.json
-drwx------   4 alice  staff     128 Jun 16 10:18 blocks
-drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
--rw-------   1 alice  staff  932824 Jun 16 10:18 debug.log
--rw-------   1 alice  staff  247985 Jun 16 10:18 fee_estimates.dat
--rw-------   1 alice  staff      27 Jun 16 10:18 mempool.dat
--rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat</code></pre>
     </section>
 
     <section id="wallet-exercise-goal" class="slide area-slide">

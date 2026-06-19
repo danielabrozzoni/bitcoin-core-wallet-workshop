@@ -37,11 +37,9 @@
         <a class="nav-sub" href="#other-code" data-parent="areas">Other subsystems</a>
         <a class="nav-sub" href="#tests" data-parent="areas">Tests</a>
       </div>
-      <a class="nav-main" href="#workshop-intro" data-group="workshop"><span>03</span>What we'll do today</a>
+      <a class="nav-main" href="#workshop-intro" data-group="workshop"><span>03</span>Workshop overview</a>
       <div class="nav-subgroup" aria-label="Workshop">
-        <a class="nav-sub" href="#workshop-intro" data-parent="workshop">Overview</a>
         <a class="nav-sub" href="#regtest-lab" data-parent="workshop">Regtest</a>
-        <a class="nav-sub" href="#node-interaction" data-parent="workshop">Interacting with your node</a>
       </div>
       <a class="nav-main" href="#setup-goal" data-group="setup"><span>04</span>Exercise 0: setup</a>
       <div class="nav-subgroup" aria-label="Exercise 0 setup">
@@ -87,13 +85,22 @@
         <a class="nav-sub" href="#wallet-scripts" data-parent="wallet-evolution">Keys are not scripts</a>
         <a class="nav-sub" href="#wallet-descriptors" data-parent="wallet-evolution">Descriptor model</a>
         <a class="nav-sub" href="#wallet-taproot-descriptor" data-parent="wallet-evolution">Complex script</a>
+        <a class="nav-sub" href="#wallet-backups" data-parent="wallet-evolution">Backups vs BIP39</a>
       </div>
-      <a class="nav-main" href="#descriptor-exercise-goal" data-group="descriptor-exercise"><span>10</span>Exercise 02: descriptors</a>
-      <div class="nav-subgroup" aria-label="Exercise 02 descriptors">
+      <a class="nav-main" href="#descriptor-exercise-goal" data-group="descriptor-exercise"><span>11</span>Exercise 03: inspect wallet descriptors</a>
+      <div class="nav-subgroup" aria-label="Exercise 03 inspect wallet descriptors">
         <a class="nav-sub" href="#descriptor-exercise-list" data-parent="descriptor-exercise">List descriptors</a>
         <a class="nav-sub" href="#descriptor-exercise-next-index" data-parent="descriptor-exercise">Watch next_index</a>
         <a class="nav-sub" href="#descriptor-exercise-address-types" data-parent="descriptor-exercise">Address types</a>
         <a class="nav-sub" href="#descriptor-exercise-change" data-parent="descriptor-exercise">Change camouflage</a>
+      </div>
+      <a class="nav-main" href="#descriptors-psbts" data-group="descriptors-psbts"><span>12</span>Descriptors and PSBTs</a>
+      <div class="nav-subgroup" aria-label="Descriptors and PSBTs">
+        <a class="nav-sub" href="#outputs-lock-to-scripts" data-parent="descriptors-psbts">Outputs are scripts</a>
+        <a class="nav-sub" href="#why-descriptors-matter" data-parent="descriptors-psbts">Why descriptors</a>
+        <a class="nav-sub" href="#psbt-coordination" data-parent="descriptors-psbts">What PSBTs do</a>
+        <a class="nav-sub" href="#psbt-flows" data-parent="descriptors-psbts">Signing workflows</a>
+        <a class="nav-sub" href="#descriptors-psbts-together" data-parent="descriptors-psbts">Takeaway</a>
       </div>
     </nav>
   </aside>
@@ -363,13 +370,25 @@
     </section>
 
     <section id="workshop-intro" class="slide area-slide">
-      <h2>What we'll do today</h2>
-      <p class="area-intro">So far we have treated Bitcoin Core as a project and a codebase. Now we switch to Bitcoin Core as a running program: we start our own node, send it commands, and watch its local state change.</p>
+      <h2>Workshop overview</h2>
+      <p class="exercise-copy">Today's workshop is focused on using Bitcoin Core and its wallet. We will start a node in regtest mode, send it commands, and watch its local state change.</p>
+      <p class="exercise-copy">To do this we will use two separate programs: <code>bitcoind</code>, which runs the node, and <code>bitcoin-cli</code>, which sends commands to that running node.</p>
+
+      <div class="rpc-options">
+        <div>
+          <code>bitcoind</code>
+          <span>The long-running process: reads configuration, owns the data directory, validates blocks and transactions, maintains wallets, and listens for local RPC calls.</span>
+        </div>
+        <div>
+          <code>bitcoin-cli</code>
+          <span>The client program: connects to the running daemon, calls a method such as <code>getblockchaininfo</code> or <code>createwallet</code>, then shows the JSON result.</span>
+        </div>
+      </div>
     </section>
 
     <section id="regtest-lab" class="slide area-slide">
       <h2>Regtest</h2>
-      <p class="area-intro">All hands-on work uses <strong>regtest</strong>, Bitcoin Core's local private chain mode. It gives us Bitcoin rules without mainnet cost, waiting, or network dependencies.</p>
+      <p class="exercise-copy">All hands-on work uses <strong>regtest</strong>, Bitcoin Core's local private chain mode. It gives us Bitcoin rules without mainnet cost, waiting, or network dependencies.</p>
       <div class="file-panel">
         <div>
           <code>No real money</code>
@@ -386,29 +405,8 @@
       </div>
       <div class="callout expected">
         <h3>Why not testnet?</h3>
-        <p>Testnet and signet are public networks. They are useful for networked experiments, but too slow and unpredictable for this workshop. Regtest is deterministic because your machine is the whole network.</p>
+        <p>Testnet and signet are public networks. They are useful for networked experiments, but they require time to sync, and block creation can be unpredictable. We prefer regtest because it is easier to set up and does not require syncing.</p>
       </div>
-    </section>
-
-    <section id="node-interaction" class="slide area-slide">
-      <h2>Interacting with your node</h2>
-      <p class="area-intro">The node and the command-line tool are separate programs. <code>bitcoind</code> keeps state and exposes RPC methods. <code>bitcoin-cli</code> sends one RPC request, prints the response, and exits.</p>
-      <div class="rpc-options">
-        <div>
-          <code>bitcoind</code>
-          <span>The long-running process: reads configuration, owns the data directory, validates blocks and transactions, maintains wallets, and listens for local RPC calls.</span>
-        </div>
-        <div>
-          <code>bitcoin-cli</code>
-          <span>The client program: connects to the running daemon, calls a method such as <code>getblockchaininfo</code> or <code>createwallet</code>, then shows the JSON result.</span>
-        </div>
-        <div>
-          <code>-datadir</code>
-          <span>The option that tells both programs which Bitcoin Core data directory to use. In this workshop, that is how we keep the lab isolated.</span>
-        </div>
-      </div>
-      <pre class="code command-code"><code>bitcoin-cli [options] &lt;rpc-command&gt; [params...]</code></pre>
-      <p class="step-label">Exercise 0 is only about getting this loop working: start the daemon, point the CLI at the same data directory, run a command, read the response.</p>
     </section>
 
     <section id="setup-goal" class="slide area-slide">
@@ -1288,8 +1286,61 @@ OP_EQUALVERIFY OP_CHECKSIG</code></pre>
 )</code></pre>
     </section>
 
+    <section id="wallet-backups" class="slide area-slide">
+      <h2>Simple backup vs technical backup</h2>
+      <p class="area-intro">Same goal: recover your coins. Very different backup model.</p>
+      <div class="backup-comparison" aria-label="Seed phrase wallet and Bitcoin Core backup models">
+        <div class="backup-column backup-seed">
+          <h3>Seed phrase wallet</h3>
+          <div class="seed-card" aria-label="Example seed phrase backup">
+            <small>example seed phrase</small>
+            <span>river</span>
+            <span>glass</span>
+            <span>orbit</span>
+            <span>cactus</span>
+            <span>silver</span>
+            <span>market</span>
+            <span>lamp</span>
+            <span>forest</span>
+            <span>velvet</span>
+            <span>pencil</span>
+            <span>anchor</span>
+            <span>window</span>
+          </div>
+          <div class="seed-flow">
+            <span>seed phrase</span>
+            <b>&darr;</b>
+            <span>restore wallet anywhere compatible</span>
+          </div>
+          <p class="backup-note">Short, human-readable, portable.</p>
+        </div>
+
+        <div class="backup-column backup-core">
+          <h3>Bitcoin Core</h3>
+          <div class="core-backup-stack">
+            <div>
+              <strong>Legacy non-HD</strong>
+              <span><code>wallet.dat</code> &rarr; keys/keypool</span>
+              <em>old backups could miss newer keys</em>
+            </div>
+            <div>
+              <strong>HD</strong>
+              <span><code>wallet.dat</code> &rarr; HD seed &rarr; future keys</span>
+            </div>
+            <div>
+              <strong>Descriptor</strong>
+              <span>wallet backup or private descriptors</span>
+              <em>descriptors are key material, not full wallet state</em>
+            </div>
+          </div>
+          <p class="backup-note">Depends on wallet type; usually wallet data on disk.</p>
+        </div>
+      </div>
+      <p class="backup-takeaway">Seed phrase backup is simple and portable. Bitcoin Core backup is more technical and varied.</p>
+    </section>
+
     <section id="descriptor-exercise-goal" class="slide area-slide">
-      <h2>Exercise 02: descriptors</h2>
+      <h2>Exercise 03: inspect wallet descriptors</h2>
       <p class="exercise-copy">Now that we have seen why descriptors exist, we will inspect the descriptors inside a real Bitcoin Core wallet.</p>
       <p class="exercise-copy">The goal is to connect the descriptor model to wallet behavior: address generation, address types, receive descriptors, and change descriptors.</p>
       <div class="file-panel">
@@ -1382,6 +1433,100 @@ output 1: bech32 change      0.42 BTC  # likely change
 # Better camouflage:
 output 0: legacy address     0.01 BTC
 output 1: legacy change      0.42 BTC</code></pre>
+    </section>
+
+    <section id="descriptors-psbts" class="slide area-slide">
+      <h2>Descriptors and PSBTs</h2>
+      <p class="exercise-copy">Modern wallets need to understand more than addresses and private keys.</p>
+      <div class="file-panel">
+        <div>
+          <code>Descriptors</code>
+          <span>Describe what coins are locked to.</span>
+        </div>
+        <div>
+          <code>PSBTs</code>
+          <span>Coordinate how those coins get spent.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="outputs-lock-to-scripts" class="slide area-slide">
+      <h2>Outputs are locked to scripts</h2>
+      <p class="exercise-copy">The simple mental model is one address, one key, one signature.</p>
+      <p class="exercise-copy">Bitcoin's actual model is more general: an output contains a spending condition, and that condition is expressed with script.</p>
+      <div class="file-panel">
+        <div>
+          <code>Simple</code>
+          <span>Provide a valid signature for this public key.</span>
+        </div>
+        <div>
+          <code>More general</code>
+          <span>Satisfy the script attached to this output.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="why-descriptors-matter" class="slide area-slide">
+      <h2>Why descriptors matter</h2>
+      <p class="exercise-copy">As scripts became more expressive, wallets needed a precise way to describe the outputs they watch and spend.</p>
+      <div class="file-panel">
+        <div>
+          <code>Scripts</code>
+          <span>P2SH, SegWit, Taproot, multisig, timelocks, and script paths.</span>
+        </div>
+        <div>
+          <code>Keys</code>
+          <span>Which keys are involved, including extended public keys.</span>
+        </div>
+        <div>
+          <code>Derivation</code>
+          <span>How the wallet derives the addresses that belong to it.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="psbt-coordination" class="slide area-slide">
+      <h2>What PSBTs do</h2>
+      <p class="exercise-copy">A PSBT is an intermediate format for a transaction that is not fully signed yet.</p>
+      <p class="exercise-copy">It carries the transaction plus extra signing metadata, then eventually gets finalized into a normal raw transaction.</p>
+      <div class="callout expected">
+        <h3>Important</h3>
+        <p>The Bitcoin network never sees the PSBT. It only sees the final extracted transaction.</p>
+      </div>
+    </section>
+
+    <section id="psbt-flows" class="slide area-slide">
+      <h2>Signing workflows</h2>
+      <p class="exercise-copy">PSBTs are useful when one device or participant cannot complete the whole transaction alone.</p>
+      <div class="file-panel">
+        <div>
+          <code>Watch-only</code>
+          <span>Builds the transaction, then sends it to a hardware wallet for signing.</span>
+        </div>
+        <div>
+          <code>Multisig</code>
+          <span>Each signer checks the transaction and adds their signature.</span>
+        </div>
+        <div>
+          <code>Airgapped</code>
+          <span>Moves unsigned and signed data without exposing private keys online.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="descriptors-psbts-together" class="slide area-slide">
+      <h2>How they fit together</h2>
+      <div class="file-panel">
+        <div>
+          <code>Descriptors</code>
+          <span>Define the wallet structure: scripts, keys, and address derivation.</span>
+        </div>
+        <div>
+          <code>PSBTs</code>
+          <span>Carry the transaction and metadata needed to collect signatures.</span>
+        </div>
+      </div>
+      <p class="exercise-copy panel-followup">Descriptors describe the coins and their spending conditions. PSBTs coordinate the process of spending them.</p>
     </section>
 
   </main>

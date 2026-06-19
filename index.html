@@ -94,14 +94,6 @@
         <a class="nav-sub" href="#descriptor-exercise-address-types" data-parent="descriptor-exercise">Address types</a>
         <a class="nav-sub" href="#descriptor-exercise-change" data-parent="descriptor-exercise">Change camouflage</a>
       </div>
-      <a class="nav-main" href="#descriptors-psbts" data-group="descriptors-psbts"><span>12</span>Descriptors and PSBTs</a>
-      <div class="nav-subgroup" aria-label="Descriptors and PSBTs">
-        <a class="nav-sub" href="#outputs-lock-to-scripts" data-parent="descriptors-psbts">Outputs are scripts</a>
-        <a class="nav-sub" href="#why-descriptors-matter" data-parent="descriptors-psbts">Why descriptors</a>
-        <a class="nav-sub" href="#psbt-coordination" data-parent="descriptors-psbts">What PSBTs do</a>
-        <a class="nav-sub" href="#psbt-flows" data-parent="descriptors-psbts">Signing workflows</a>
-        <a class="nav-sub" href="#descriptors-psbts-together" data-parent="descriptors-psbts">Takeaway</a>
-      </div>
     </nav>
   </aside>
 
@@ -211,10 +203,6 @@
           <span>Pure consensus rules for transactions and blocks: stateless functions with no node, policy, or storage concerns.</span>
         </div>
         <div>
-          <code>src/kernel/</code>
-          <span>Infrastructure layer for the consensus engine: chain parameters, notification callbacks, and the public <code>libbitcoinkernel</code> C API.</span>
-        </div>
-        <div>
           <code>src/validation.cpp</code>
           <span>The core engine that applies consensus rules to the live chain state: connects/disconnects blocks, accepts transactions to the mempool, and manages reorgs.</span>
         </div>
@@ -231,16 +219,16 @@
       <p class="file-panel-label">Main code files:</p>
       <div class="file-panel">
         <div>
+          <code>src/node/blockstorage.cpp</code>
+          <span>Reads and writes raw block and undo data to disk, and maintains the block index.</span>
+        </div>
+        <div>
           <code>src/coins.cpp</code>
           <span>In-memory UTXO cache with dirty/fresh tracking, sits in front of the on-disk backend.</span>
         </div>
         <div>
           <code>src/txdb.cpp</code>
           <span>LevelDB-backed UTXO set, with crash-safe flushing to disk.</span>
-        </div>
-        <div>
-          <code>src/node/blockstorage.cpp</code>
-          <span>Reads and writes raw block and undo data to disk, and maintains the block index.</span>
         </div>
       </div>
     </section>
@@ -289,14 +277,6 @@
           <code>src/net_processing.cpp</code>
           <span>Interprets all P2P messages: drives block and transaction download, relay, peer scoring, and headers sync.</span>
         </div>
-        <div>
-          <code>src/addrman.cpp</code>
-          <span>Stores and selects peer addresses using a two-table bucketing scheme designed to resist eclipse attacks.</span>
-        </div>
-        <div>
-          <code>src/node/eviction.cpp</code>
-          <span>Selects which inbound peer to disconnect when at capacity, protecting peers by usefulness and network diversity.</span>
-        </div>
       </div>
     </section>
 
@@ -321,10 +301,6 @@
         <div>
           <code>src/script/</code>
           <span>Script execution engine, descriptor parsing, signing logic, Miniscript, and script type recognition.</span>
-        </div>
-        <div>
-          <code>src/psbt.cpp</code>
-          <span>The PSBT data structure (BIP174): an unsigned transaction bundled with the metadata needed for multiple parties to collaboratively sign it.</span>
         </div>
       </div>
     </section>
@@ -1287,8 +1263,7 @@ OP_EQUALVERIFY OP_CHECKSIG</code></pre>
     </section>
 
     <section id="wallet-backups" class="slide area-slide">
-      <h2>Simple backup vs technical backup</h2>
-      <p class="area-intro">Same goal: recover your coins. Very different backup model.</p>
+      <h2>Backup: BIP39 vs Bitcoin Core</h2>
       <div class="backup-comparison" aria-label="Seed phrase wallet and Bitcoin Core backup models">
         <div class="backup-column backup-seed">
           <h3>Seed phrase wallet</h3>
@@ -1312,7 +1287,6 @@ OP_EQUALVERIFY OP_CHECKSIG</code></pre>
             <b>&darr;</b>
             <span>restore wallet anywhere compatible</span>
           </div>
-          <p class="backup-note">Short, human-readable, portable.</p>
         </div>
 
         <div class="backup-column backup-core">
@@ -1330,13 +1304,10 @@ OP_EQUALVERIFY OP_CHECKSIG</code></pre>
             <div>
               <strong>Descriptor</strong>
               <span>wallet backup or private descriptors</span>
-              <em>descriptors are key material, not full wallet state</em>
             </div>
           </div>
-          <p class="backup-note">Depends on wallet type; usually wallet data on disk.</p>
         </div>
       </div>
-      <p class="backup-takeaway">Seed phrase backup is simple and portable. Bitcoin Core backup is more technical and varied.</p>
     </section>
 
     <section id="descriptor-exercise-goal" class="slide area-slide">
@@ -1433,100 +1404,6 @@ output 1: bech32 change      0.42 BTC  # likely change
 # Better camouflage:
 output 0: legacy address     0.01 BTC
 output 1: legacy change      0.42 BTC</code></pre>
-    </section>
-
-    <section id="descriptors-psbts" class="slide area-slide">
-      <h2>Descriptors and PSBTs</h2>
-      <p class="exercise-copy">Modern wallets need to understand more than addresses and private keys.</p>
-      <div class="file-panel">
-        <div>
-          <code>Descriptors</code>
-          <span>Describe what coins are locked to.</span>
-        </div>
-        <div>
-          <code>PSBTs</code>
-          <span>Coordinate how those coins get spent.</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="outputs-lock-to-scripts" class="slide area-slide">
-      <h2>Outputs are locked to scripts</h2>
-      <p class="exercise-copy">The simple mental model is one address, one key, one signature.</p>
-      <p class="exercise-copy">Bitcoin's actual model is more general: an output contains a spending condition, and that condition is expressed with script.</p>
-      <div class="file-panel">
-        <div>
-          <code>Simple</code>
-          <span>Provide a valid signature for this public key.</span>
-        </div>
-        <div>
-          <code>More general</code>
-          <span>Satisfy the script attached to this output.</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="why-descriptors-matter" class="slide area-slide">
-      <h2>Why descriptors matter</h2>
-      <p class="exercise-copy">As scripts became more expressive, wallets needed a precise way to describe the outputs they watch and spend.</p>
-      <div class="file-panel">
-        <div>
-          <code>Scripts</code>
-          <span>P2SH, SegWit, Taproot, multisig, timelocks, and script paths.</span>
-        </div>
-        <div>
-          <code>Keys</code>
-          <span>Which keys are involved, including extended public keys.</span>
-        </div>
-        <div>
-          <code>Derivation</code>
-          <span>How the wallet derives the addresses that belong to it.</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="psbt-coordination" class="slide area-slide">
-      <h2>What PSBTs do</h2>
-      <p class="exercise-copy">A PSBT is an intermediate format for a transaction that is not fully signed yet.</p>
-      <p class="exercise-copy">It carries the transaction plus extra signing metadata, then eventually gets finalized into a normal raw transaction.</p>
-      <div class="callout expected">
-        <h3>Important</h3>
-        <p>The Bitcoin network never sees the PSBT. It only sees the final extracted transaction.</p>
-      </div>
-    </section>
-
-    <section id="psbt-flows" class="slide area-slide">
-      <h2>Signing workflows</h2>
-      <p class="exercise-copy">PSBTs are useful when one device or participant cannot complete the whole transaction alone.</p>
-      <div class="file-panel">
-        <div>
-          <code>Watch-only</code>
-          <span>Builds the transaction, then sends it to a hardware wallet for signing.</span>
-        </div>
-        <div>
-          <code>Multisig</code>
-          <span>Each signer checks the transaction and adds their signature.</span>
-        </div>
-        <div>
-          <code>Airgapped</code>
-          <span>Moves unsigned and signed data without exposing private keys online.</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="descriptors-psbts-together" class="slide area-slide">
-      <h2>How they fit together</h2>
-      <div class="file-panel">
-        <div>
-          <code>Descriptors</code>
-          <span>Define the wallet structure: scripts, keys, and address derivation.</span>
-        </div>
-        <div>
-          <code>PSBTs</code>
-          <span>Carry the transaction and metadata needed to collect signatures.</span>
-        </div>
-      </div>
-      <p class="exercise-copy panel-followup">Descriptors describe the coins and their spending conditions. PSBTs coordinate the process of spending them.</p>
     </section>
 
   </main>

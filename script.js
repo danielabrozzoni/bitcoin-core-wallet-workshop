@@ -27,6 +27,31 @@ function bindSelectorGroup({ buttonSelector, paneSelector, storageKey, defaultVa
   });
 }
 
+function useReadableBitcoinSymbolFallback() {
+  const symbol = document.querySelector(".title-slide .bitcoin-symbol");
+  if (!symbol) return;
+
+  const style = window.getComputedStyle(symbol);
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+  const bitcoinMetrics = context.measureText("₿");
+  const fallbackMetrics = context.measureText(symbol.dataset.fallback || "B");
+  const bitcoinHeight = bitcoinMetrics.actualBoundingBoxAscent + bitcoinMetrics.actualBoundingBoxDescent;
+  const fallbackHeight = fallbackMetrics.actualBoundingBoxAscent + fallbackMetrics.actualBoundingBoxDescent;
+  const hasTinyFallbackGlyph = fallbackHeight > 0 && bitcoinHeight > 0 && bitcoinHeight < fallbackHeight * 0.72;
+  const hasNarrowFallbackGlyph = fallbackMetrics.width > 0 && bitcoinMetrics.width < fallbackMetrics.width * 0.55;
+
+  if (hasTinyFallbackGlyph || hasNarrowFallbackGlyph) {
+    symbol.textContent = symbol.dataset.fallback || "B";
+    symbol.classList.add("fallback");
+  }
+}
+
+useReadableBitcoinSymbolFallback();
+
 bindSelectorGroup({
   buttonSelector: "[data-os-select]",
   paneSelector: "[data-os-pane]",

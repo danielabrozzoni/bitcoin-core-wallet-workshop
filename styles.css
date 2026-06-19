@@ -438,6 +438,79 @@ h3 {
   border-left: 0.4rem solid var(--pink);
 }
 
+.project-definition {
+  max-width: 62rem;
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.15rem, 1.8vw, 1.65rem);
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--lede);
+}
+
+.project-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  max-width: 72rem;
+}
+
+.project-facts div {
+  border: 2px solid var(--ink);
+  background: var(--panel);
+  padding: 0.9rem 1rem;
+}
+
+.project-facts div:first-child {
+  background: color-mix(in srgb, var(--blue) 14%, var(--panel));
+}
+
+.project-facts div:nth-child(2) {
+  background: color-mix(in srgb, var(--pink) 14%, var(--panel));
+}
+
+.project-facts strong,
+.project-facts span {
+  display: block;
+}
+
+.project-facts strong {
+  margin-bottom: 0.35rem;
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  text-transform: uppercase;
+}
+
+.project-facts span {
+  color: var(--lede);
+  font-size: clamp(1rem, 1.25vw, 1.16rem);
+  line-height: 1.32;
+}
+
+.technical-rows {
+  display: grid;
+  max-width: 74rem;
+  border-top: 2px solid var(--ink);
+}
+
+.technical-rows div {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.36fr) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--ink);
+}
+
+.technical-rows strong {
+  font-size: clamp(1rem, 1.35vw, 1.22rem);
+  line-height: 1.25;
+}
+
+.technical-rows span {
+  color: var(--lede);
+  font-size: clamp(1rem, 1.25vw, 1.16rem);
+  line-height: 1.35;
+}
+
 .tool-list {
   font-size: clamp(1rem, 1.45vw, 1.35rem);
 }
@@ -1455,6 +1528,7 @@ details summary {
     grid-template-columns: 1fr;
   }
 
+  .project-facts,
   .exercise-grid,
   .block-row,
   .diagram,
@@ -1500,6 +1574,11 @@ details summary {
 
   .file-panel div {
     grid-template-columns: 1fr;
+  }
+
+  .technical-rows div {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
   .rpc-options div,

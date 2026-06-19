@@ -20,12 +20,8 @@
       <a class="nav-main" href="#title" data-group="intro"><span>01</span>Bitcoin Core Wallet</a>
       <div class="nav-subgroup" aria-label="Bitcoin Core">
         <a class="nav-sub" href="#project" data-parent="intro">What Bitcoin Core is</a>
-      </div>
-      <a class="nav-main archived" href="#development" data-group="development" data-archived="true"><span>02</span>Development Process</a>
-      <div class="nav-subgroup archived" aria-label="Development process" data-archived="true">
-        <a class="nav-sub" href="#development" data-parent="development">Development process</a>
-        <a class="nav-sub" href="#maintainers" data-parent="development">Maintainers</a>
-        <a class="nav-sub" href="#releases" data-parent="development">Releases</a>
+        <a class="nav-sub" href="#project-technical" data-parent="intro">What it does</a>
+        <a class="nav-sub" href="#development" data-parent="intro">Development process</a>
       </div>
       <a class="nav-main" href="#map" data-group="areas"><span>02</span>Code map</a>
       <div class="nav-subgroup" aria-label="Code areas">
@@ -101,22 +97,56 @@
     <section id="title" class="slide opening title-slide">
       <div class="kicker">Workshop</div>
       <h1>Bitcoin Core Wallet</h1>
-      <p class="lede">Plan ₿ Summer School · Lugano · June - July 2026</p>
+      <p class="lede">Plan <span class="bitcoin-symbol" data-fallback="B">₿</span> Summer School · Lugano · June - July 2026</p>
       <p class="presenter">Daniela Brozzoni</p>
     </section>
 
     <section id="project" class="slide area-slide">
-      <h2>What Bitcoin Core is</h2>
-      <p class="area-intro">Bitcoin Core is an open source project that maintains and releases Bitcoin client software also called Bitcoin Core.</p>
-      <ul class="area-list">
-        <li>Direct descendant of the original Bitcoin software released by Satoshi Nakamoto</li>
-        <li>Includes full-node software for fully validating the blockchain</li>
-        <li>Development happens publicly at <a href="https://github.com/bitcoin/bitcoin">github.com/bitcoin/bitcoin</a></li>
-        <li>Mostly C++, with Python tests and developer tooling around it</li>
-      </ul>
+      <h2>What is Bitcoin Core?</h2>
+      <p class="project-definition">Bitcoin Core is the most widely used open-source implementation of a Bitcoin full node.</p>
+      <div class="project-facts">
+        <div>
+          <strong>Origin</strong>
+          <span>Direct descendant of the original Bitcoin software released by Satoshi Nakamoto</span>
+        </div>
+        <div>
+          <strong>Role</strong>
+          <span>The reference implementation most developers and node operators build around</span>
+        </div>
+        <div>
+          <strong>Development</strong>
+          <span>Developed publicly at <a href="https://github.com/bitcoin/bitcoin">github.com/bitcoin/bitcoin</a></span>
+        </div>
+        <div>
+          <strong>Codebase</strong>
+          <span>Written mostly in C++, with Python-based tests and developer tooling</span>
+        </div>
+      </div>
     </section>
 
-    <section id="development" class="slide area-slide archived" data-archived="true">
+    <section id="project-technical" class="slide area-slide">
+      <h2>What does it do technically?</h2>
+      <div class="technical-rows">
+        <div>
+          <strong>Validates independently</strong>
+          <span>Downloads blocks and verifies proof of work, transactions, scripts, and consensus rules.</span>
+        </div>
+        <div>
+          <strong>Maintains local state</strong>
+          <span>Stores the blockchain, tracks the UTXO set, and manages the mempool.</span>
+        </div>
+        <div>
+          <strong>Participates in P2P</strong>
+          <span>Connects to peers and relays valid transactions and blocks.</span>
+        </div>
+        <div>
+          <strong>Provides interfaces</strong>
+          <span>Exposes RPC/REST APIs and includes an optional wallet.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="development" class="slide area-slide">
       <h2>How Bitcoin Core development works</h2>
       <p class="area-intro">Bitcoin Core is an open source project. Development happens publicly, mostly through the GitHub repository at <a href="https://github.com/bitcoin/bitcoin">github.com/bitcoin/bitcoin</a>.</p>
       <ul class="area-list">

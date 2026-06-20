@@ -557,7 +557,8 @@ Copyright (C) 2009-2026 The Bitcoin Core developers</code></pre>
 
     <section id="setup-config" class="slide area-slide">
       <h2>Create <code>bitcoin.conf</code></h2>
-      <p class="exercise-copy">Bitcoin Core configuration is stored in <code>bitcoin.conf</code>. We create this file inside <code>bitcoind-datadir</code> so these settings apply only to this workshop node, then add the setting that runs the node in regtest.</p>
+      <p class="exercise-copy">Bitcoin Core configuration is stored in <code>bitcoin.conf</code>. We create this file inside <code>bitcoind-datadir</code> so these settings apply only to this workshop node, then add the settings that run the node in regtest and make transaction lookup easy.</p>
+      <p class="exercise-copy"><code>txindex=1</code> tells Bitcoin Core to build and keep a full transaction index. This lets us look up transactions by txid later with commands like <code>getrawtransaction</code>.</p>
       <div class="os-code">
         <div class="os-tabs" aria-label="Operating system">
           <button type="button" data-os-select="mac">macOS</button>
@@ -574,7 +575,8 @@ Copyright (C) 2009-2026 The Bitcoin Core developers</code></pre>
           <pre class="code"><code>notepad bitcoind-datadir\bitcoin.conf</code></pre>
         </div>
       </div>
-      <pre class="code"><code>regtest=1</code></pre>
+      <pre class="code"><code>regtest=1
+txindex=1</code></pre>
     </section>
 
     <section id="setup-start" class="slide area-slide">
@@ -602,6 +604,7 @@ Copyright (C) 2009-2026 The Bitcoin Core developers</code></pre>
         <p>Leave this terminal open while the node runs. In the log output, look for these lines:</p>
         <pre class="code"><code>Using data directory /path/to/directory/planb-core-workshop/bitcoind-datadir/regtest
 Config file arg: regtest="1"
+Config file arg: txindex="1"
 Done loading</code></pre>
       </div>
     </section>
@@ -621,6 +624,7 @@ Done loading</code></pre>
       </div>
       <p class="exercise-copy config-followup">For macOS and Linux, modify <code>bitcoin.conf</code> so it now contains:</p>
       <pre class="code"><code>regtest=1
+txindex=1
 daemon=1</code></pre>
       <p class="exercise-copy">Now start the node again. This time it should return control to your terminal after startup.</p>
       <div class="os-code">
@@ -972,7 +976,8 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
     <section id="wallet-exercise-send" class="slide area-slide">
       <h2>Send to another address</h2>
       <p class="exercise-copy">Next, create a destination address and send some coins to it. In regtest this can be another address from the same wallet; the point is to create a real transaction and watch how the wallet state changes.</p>
-      <p class="exercise-copy">Before sending, use <code>getbalances</code> to check that the wallet has mature coins available. Then send with <code>-named sendtoaddress</code>, pass an explicit <code>fee_rate</code> in sat/vB, and check the mempool to see that the transaction is waiting to be mined.</p>
+      <p class="exercise-copy">Before sending, use <code>getbalances</code> to check that the wallet has mature coins available. Then call <code>sendtoaddress</code>, pass an explicit <code>fee_rate</code> in sat/vB, and check the mempool to see that the transaction is waiting to be mined.</p>
+      <p class="exercise-copy"><code>-named</code> is a <code>./bitcoin-cli</code> option that lets you pass RPC arguments as <code>name=value</code> pairs instead of remembering their positional order. Put <code>-named</code> before the RPC command, then write each argument by name: <code>address=...</code>, <code>amount=...</code>, and <code>fee_rate=...</code>.</p>
       <p class="file-panel-label">Suggested flow:</p>
       <div class="file-panel">
         <div>
@@ -984,8 +989,8 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Generate the destination address for the payment.</span>
         </div>
         <div>
-          <code>-named sendtoaddress</code>
-          <span>Send coins with <code>fee_rate=&lt;sats/vB&gt;</code> and save the txid returned by the wallet.</span>
+          <code>sendtoaddress</code>
+          <span>Use <code>-named</code>, set <code>address=</code>, <code>amount=</code>, and <code>fee_rate=</code>, then save the txid returned by the wallet.</span>
         </div>
         <div>
           <code>getrawmempool</code>
@@ -999,12 +1004,28 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
     <section id="wallet-exercise-inspect" class="slide area-slide">
       <h2>Inspect the transaction</h2>
       <p class="exercise-copy">Use <code>gettransaction</code> with the txid from the previous step to examine the wallet's view of the transaction. This shows whether the transaction is confirmed, how much it changed the wallet balance, and other wallet-specific details.</p>
+      <p class="exercise-copy">Then use <code>getrawtransaction &lt;txid&gt; true</code> to ask Bitcoin Core for verbose decoded output. This shows what the transaction itself looks like: inputs, outputs, amounts, scripts, size, weight, and confirmation details.</p>
       <p class="file-panel-label">Command hints:</p>
       <div class="file-panel">
         <div>
           <code>gettransaction &lt;txid&gt;</code>
           <span>Inspect the wallet's view of the transaction.</span>
         </div>
+        <div>
+          <code>getrawtransaction &lt;txid&gt; true</code>
+          <span>Inspect the decoded transaction structure with verbose output.</span>
+        </div>
+      </div>
+      <div class="callout expected">
+        <h3>If you want to learn more</h3>
+        <p><code>gettransaction &lt;txid&gt;</code> looks in your wallet. If the wallet knows about that transaction, it can show it.</p>
+        <p><code>getrawtransaction &lt;txid&gt; true</code> looks from the node's transaction and blockchain data. By default, Bitcoin Core does not keep an easy lookup index for every historical transaction, so <code>getrawtransaction</code> usually works if:</p>
+        <ul>
+          <li>the transaction is still in the mempool,</li>
+          <li>the node was started with <code>txindex=1</code>, or</li>
+          <li>you provide the block hash too: <code>./bitcoin-cli getrawtransaction &lt;txid&gt; true &lt;blockhash&gt;</code></li>
+        </ul>
+        <p>Without one of those, Bitcoin Core may say it cannot find the transaction, even though the transaction exists on-chain.</p>
       </div>
     </section>
 

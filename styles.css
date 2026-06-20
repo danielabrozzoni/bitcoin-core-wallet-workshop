@@ -798,7 +798,7 @@ h3 {
 
 .backup-comparison {
   display: grid;
-  grid-template-columns: minmax(18rem, 0.9fr) minmax(24rem, 1.35fr);
+  grid-template-columns: minmax(24rem, 1fr) minmax(24rem, 1fr);
   gap: clamp(1.6rem, 2.6vw, 2.4rem);
   max-width: 76rem;
   margin: clamp(1.8rem, 4vh, 2.8rem) 0 1rem;
@@ -811,7 +811,7 @@ h3 {
   padding: clamp(1.25rem, 2vw, 1.75rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 1.6vw, 1.35rem);
+  gap: clamp(0.85rem, 1.35vw, 1.15rem);
 }
 
 .backup-column h3 {
@@ -821,61 +821,97 @@ h3 {
 }
 
 .backup-seed {
-  background: color-mix(in srgb, var(--blue) 10%, var(--panel));
+  background: #edf3f4;
 }
 
 .backup-core {
   background: color-mix(in srgb, var(--pink) 8%, var(--panel));
 }
 
-.seed-card {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem 0.65rem;
-  margin-bottom: 0;
-  border: 2px solid var(--ink);
-  background: var(--panel);
-  padding: clamp(0.85rem, 1.5vw, 1.1rem);
+.backup-model-intro {
+  margin: 0 0 0.25rem;
+  max-width: 32rem;
+  color: var(--lede);
+  font-size: clamp(1rem, 1.18vw, 1.12rem);
+  font-weight: 760;
+  line-height: 1.32;
 }
 
-.seed-card small {
-  grid-column: 1 / -1;
+.bip39-phrase {
+  counter-reset: seed-word;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1rem, 2vw, 1.8rem);
+  row-gap: 0.5rem;
+  margin: 0.35rem 0 0;
+  padding: clamp(1rem, 1.8vw, 1.35rem);
+  list-style: none;
+  border: 2px solid var(--ink);
+  background: #fbfdfd;
+}
+
+.bip39-phrase li {
+  counter-increment: seed-word;
+  display: grid;
+  grid-template-columns: 2ch minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: baseline;
+  min-width: 0;
   color: var(--muted);
-  font-size: clamp(0.72rem, 0.85vw, 0.82rem);
-  font-weight: 800;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: clamp(0.82rem, 1vw, 0.95rem);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.bip39-phrase li::before {
+  content: counter(seed-word, decimal-leading-zero);
+  color: color-mix(in srgb, var(--muted) 72%, white);
+  font-size: 0.74em;
+}
+
+.bip39-phrase span {
+  min-width: 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.bip39-facts {
+  display: grid;
+  gap: 0;
+  margin: 0.2rem 0 0;
+  padding: 0;
+}
+
+.bip39-facts div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.bip39-facts dt,
+.bip39-facts dd {
+  margin: 0;
+  line-height: 1.28;
+}
+
+.bip39-facts dt {
+  color: var(--muted);
+  font-size: clamp(0.78rem, 0.88vw, 0.86rem);
+  font-weight: 850;
   text-transform: uppercase;
 }
 
-.seed-card span {
-  border-bottom: 1px solid var(--line);
-  padding: 0.28rem 0;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+.bip39-facts dd {
   color: var(--lede);
-  text-align: center;
+  font-size: clamp(0.96rem, 1.08vw, 1.05rem);
+  font-weight: 780;
 }
 
-.seed-flow {
-  display: grid;
-  gap: 0.6rem;
-  justify-items: center;
-  margin: 0;
-}
-
-.seed-flow span {
-  width: 100%;
-  border: 2px solid var(--ink);
-  background: var(--panel);
-  padding: 0.72rem 0.85rem;
-  font-size: clamp(0.98rem, 1.25vw, 1.12rem);
-  font-weight: 850;
-  text-align: center;
-}
-
-.seed-flow b {
-  display: block;
-  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
-  line-height: 1;
+.bip39-facts div:first-child {
+  border-top: 0;
 }
 
 .core-backup-stack {
@@ -1495,6 +1531,15 @@ details summary {
 
   .script-templates {
     grid-template-columns: 1fr;
+  }
+
+  .bip39-phrase,
+  .bip39-facts div {
+    grid-template-columns: 1fr;
+  }
+
+  .bip39-facts div {
+    gap: 0.25rem;
   }
 
   .job-grid div {

@@ -1244,34 +1244,11 @@ many keys in the signing policy</code></pre>
     </section>
 
     <section id="wallet-backups" class="slide area-slide">
-      <h2>Backup: BIP39 vs Bitcoin Core</h2>
+      <h2>Backup: Bitcoin Core vs BIP39</h2>
       <div class="backup-comparison" aria-label="Seed phrase wallet and Bitcoin Core backup models">
-        <div class="backup-column backup-seed">
-          <h3>Seed phrase wallet</h3>
-          <div class="seed-card" aria-label="Example seed phrase backup">
-            <small>example seed phrase</small>
-            <span>river</span>
-            <span>glass</span>
-            <span>orbit</span>
-            <span>cactus</span>
-            <span>silver</span>
-            <span>market</span>
-            <span>lamp</span>
-            <span>forest</span>
-            <span>velvet</span>
-            <span>pencil</span>
-            <span>anchor</span>
-            <span>window</span>
-          </div>
-          <div class="seed-flow">
-            <span>seed phrase</span>
-            <b>&darr;</b>
-            <span>restore wallet anywhere compatible</span>
-          </div>
-        </div>
-
         <div class="backup-column backup-core">
           <h3>Bitcoin Core</h3>
+          <p class="backup-model-intro">Backup format depends on the wallet generation.</p>
           <div class="core-backup-stack">
             <div>
               <strong>Legacy non-HD</strong>
@@ -1287,6 +1264,39 @@ many keys in the signing policy</code></pre>
               <span>wallet backup or private descriptors</span>
             </div>
           </div>
+        </div>
+
+        <div class="backup-column backup-seed">
+          <h3>BIP39</h3>
+          <p class="backup-model-intro">Backup is a human-readable recovery phrase.</p>
+          <ol class="bip39-phrase" aria-label="Example recovery phrase">
+            <li><span>river</span></li>
+            <li><span>glass</span></li>
+            <li><span>orbit</span></li>
+            <li><span>cactus</span></li>
+            <li><span>silver</span></li>
+            <li><span>market</span></li>
+            <li><span>lamp</span></li>
+            <li><span>forest</span></li>
+            <li><span>velvet</span></li>
+            <li><span>pencil</span></li>
+            <li><span>anchor</span></li>
+            <li><span>window</span></li>
+          </ol>
+          <dl class="bip39-facts">
+            <div>
+              <dt>Length</dt>
+              <dd>12 or 24 words</dd>
+            </div>
+            <div>
+              <dt>Extra secret</dt>
+              <dd>Optional passphrase</dd>
+            </div>
+            <div>
+              <dt>Restore path</dt>
+              <dd>Compatible BIP39 wallets</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>

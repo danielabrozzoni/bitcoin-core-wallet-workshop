@@ -91,6 +91,14 @@
         <a class="nav-sub" href="#descriptor-exercise-address-types" data-parent="descriptor-exercise">Address types</a>
         <a class="nav-sub" href="#descriptor-exercise-change" data-parent="descriptor-exercise">Change camouflage</a>
       </div>
+      <a class="nav-main" href="#fee-bump-exercise-goal" data-group="fee-bump-exercise"><span>11</span>Exercise 04: fee bumping fun</a>
+      <div class="nav-subgroup" aria-label="Exercise 04 fee bumping fun">
+        <a class="nav-sub" href="#fee-bump-exercise-create" data-parent="fee-bump-exercise">Create the transaction</a>
+        <a class="nav-sub" href="#fee-bump-exercise-calculate-old" data-parent="fee-bump-exercise">Calculate old feerate</a>
+        <a class="nav-sub" href="#fee-bump-exercise-bump" data-parent="fee-bump-exercise">Bump the fee</a>
+        <a class="nav-sub" href="#fee-bump-exercise-compare" data-parent="fee-bump-exercise">Compare feerates</a>
+      </div>
+      <a class="nav-main" href="#closing" data-group="closing"><span>12</span>Closing</a>
     </nav>
   </aside>
 
@@ -1079,12 +1087,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
     <section id="wallet-evolution" class="slide area-slide">
       <h2>Wallet evolution</h2>
       <p class="area-intro">The wallet has changed from a bag of individually stored keys into a model that explicitly describes which scripts belong to the wallet.</p>
-      <div class="timeline-grid">
-        <div><h3>Early wallet</h3><p><code>wallet.dat</code> stored private keys, metadata, and transactions. Backups had to include keys that were generated later.</p></div>
-        <div><h3>0.13.0</h3><p>New wallets used BIP32 hierarchical deterministic key generation. One seed could derive future keys.</p></div>
-        <div><h3>0.21.0</h3><p>Descriptor wallets were introduced as an experimental wallet type.</p></div>
-        <div><h3>23.0</h3><p>Descriptor wallets became the default for newly created wallets.</p></div>
-      </div>
+      <img class="slide-image wallet-evolution-image" src="images/dinosaurs.png" alt="Illustration of dinosaurs representing older wallet generations">
     </section>
 
     <section id="wallet-legacy" class="slide area-slide">
@@ -1398,6 +1401,94 @@ output 1: bech32 change      0.42 BTC  # likely change
 # Better camouflage:
 output 0: legacy address     0.01 BTC
 output 1: legacy change      0.42 BTC</code></pre>
+    </section>
+
+    <section id="fee-bump-exercise-goal" class="slide area-slide">
+      <h2>Exercise 04: fee bumping fun</h2>
+      <p class="exercise-copy">We are closing today's workshop with some fee bumping. It is a useful way to deepen our understanding of Bitcoin transactions, because changing the fee means changing the transaction.</p>
+      <div class="file-panel">
+        <div>
+          <code>Time</code>
+          <span>10 min</span>
+        </div>
+        <div>
+          <code>Goal</code>
+          <span>Fee bump a transaction with <code>bumpfee</code>, calculating the old and new fee rates.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="fee-bump-exercise-create" class="slide area-slide">
+      <h2>Create the transaction</h2>
+      <p class="exercise-copy">Start by creating a transaction with <code>sendtoaddress</code>, as we did in Exercise 01. You can use an address from your own wallet with <code>getnewaddress</code>.</p>
+      <p class="exercise-copy">Display the initial transaction with <code>getrawtransaction &lt;txid&gt; 1</code>, then check the mempool with <code>getrawmempool</code>.</p>
+      <p class="exercise-copy panel-followup">The transaction should be in the mempool. Do not mine a block yet; we want the transaction to stay unconfirmed so it can be replaced.</p>
+    </section>
+
+    <section id="fee-bump-exercise-calculate-old" class="slide area-slide">
+      <h2>Calculate the old feerate</h2>
+      <p class="exercise-copy">Let's double-check that the fee rate of the old transaction is really what we asked for. The verbose output from <code>getrawtransaction &lt;txid&gt; 1</code> shows the transaction inputs, outputs, and <code>vsize</code>.</p>
+      <p class="file-panel-label">Manual calculation:</p>
+      <div class="file-panel">
+        <div>
+          <code>Inputs</code>
+          <span>For each input, use <code>getrawtransaction &lt;input_txid&gt; 1</code>, then look up the referenced <code>vout</code> amount.</span>
+        </div>
+        <div>
+          <code>Outputs</code>
+          <span>Add the output amounts from the transaction you created.</span>
+        </div>
+        <div>
+          <code>Fee</code>
+          <span><code>sum(inputs) - sum(outputs)</code>, converted to sats.</span>
+        </div>
+        <div>
+          <code>Feerate</code>
+          <span><code>fee in sats / vsize</code>, giving sats/vB.</span>
+        </div>
+      </div>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir getrawtransaction &lt;input_txid&gt; 1</code></pre>
+    </section>
+
+    <section id="fee-bump-exercise-bump" class="slide area-slide">
+      <h2>Bump the fee</h2>
+      <p class="exercise-copy"><code>bumpfee</code> asks the wallet to create a replacement transaction that spends at least one of the same inputs as the original transaction, pays a higher fee, signs it, and broadcasts it.</p>
+      <p class="exercise-copy">For this exercise, do not pass a new <code>fee_rate</code>. Let Bitcoin Core pick the replacement fee automatically.</p>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir bumpfee &lt;txid&gt;
+./bitcoin-cli -datadir=bitcoind-datadir getrawmempool</code></pre>
+      <p class="exercise-copy panel-followup"><code>bumpfee</code> returns the replacement transaction id. Check the mempool: only the bumped transaction should be there now.</p>
+    </section>
+
+    <section id="fee-bump-exercise-compare" class="slide area-slide">
+      <h2>Compare feerates</h2>
+      <p class="exercise-copy">Display the bumped transaction with <code>getrawtransaction &lt;new_txid&gt; 1</code>, then calculate its exact fee rate the same way: sum inputs, sum outputs, subtract outputs from inputs, convert to sats, and divide by <code>vsize</code>.</p>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir getrawtransaction &lt;new_txid&gt; 1</code></pre>
+      <p class="exercise-copy">Compare the old and new fee rates. In this workshop setup, the new fee rate should be around <code>5 sat/vB</code> higher.</p>
+      <div class="callout expected">
+        <h3>If you want to learn more</h3>
+        <p>If you run <code>./bitcoin-cli bumpfee &lt;txid&gt;</code> and do not give <code>fee_rate</code>, Bitcoin Core chooses a target fee rate like this:</p>
+        <pre class="code"><code>target feerate =
+  max(
+    original transaction feerate + bump increment,
+    wallet's automatic fee estimate
+  )</code></pre>
+        <p>In this specific setup we do not have a fee estimate, so it will use the original fee rate plus the bump increment.</p>
+        <p>More concretely, the bump-increment side is:</p>
+        <pre class="code"><code>original tx fee / original tx vsize
++ 1 sat/kvB rounding guard
++ max(node incrementalrelayfee, wallet incremental relay fee)</code></pre>
+        <p>In current Core, the wallet's internal bump increment is usually bigger than the node's advertised incremental fee:</p>
+        <pre class="code"><code>node incrementalfee:     often 0.1 sat/vB
+wallet bump increment:   5.0 sat/vB</code></pre>
+        <p>So for many examples, automatic <code>bumpfee</code> means: <code>new feerate ~= old feerate + 5 sat/vB</code>.</p>
+      </div>
+    </section>
+
+    <section id="closing" class="slide area-slide">
+      <h2>That's all!</h2>
+      <p class="exercise-copy">Before leaving, stop your regtest node cleanly.</p>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir stop</code></pre>
+      <img class="slide-image closing-image" src="images/bye.png" alt="Goodbye illustration">
     </section>
 
   </main>

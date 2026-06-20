@@ -440,6 +440,7 @@ h3 {
   overflow: hidden;
 }
 
+.slide-image,
 .code-map-image {
   display: block;
   flex: 1 1 auto;
@@ -449,6 +450,25 @@ h3 {
   object-fit: contain;
   object-position: left top;
   margin-top: 1rem;
+}
+
+#wallet-hd {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--topbar));
+  overflow: hidden;
+}
+
+.hd-wallet-image {
+  max-width: 74rem;
+  align-self: flex-start;
+}
+
+.image-credit {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: clamp(0.78rem, 0.9vw, 0.9rem);
+  font-weight: 650;
 }
 
 .big-list li {
@@ -1136,130 +1156,6 @@ h3 {
   margin-top: 0.85rem;
 }
 
-.hd-tree {
-  display: grid;
-  gap: 1.15rem;
-  max-width: 62rem;
-  margin: 1rem 0 1.4rem;
-}
-
-.tree-level {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.branch-level::before {
-  content: "";
-  position: absolute;
-  top: -0.6rem;
-  left: 16%;
-  right: 16%;
-  border-top: 2px solid var(--ink);
-}
-
-.tree-level + .tree-level::after {
-  content: "";
-  position: absolute;
-  top: -1.15rem;
-  left: 50%;
-  height: 1.15rem;
-  border-left: 2px solid var(--ink);
-}
-
-.leaf-level::after {
-  display: none;
-}
-
-.tree-node {
-  position: relative;
-  display: grid;
-  place-items: center;
-  gap: 0.35rem;
-  min-width: 9rem;
-  min-height: 4.6rem;
-  border: 2px solid var(--ink);
-  background: var(--panel);
-  padding: 0.65rem 0.8rem;
-  text-align: center;
-}
-
-.hd-branches {
-  align-items: start;
-}
-
-.hd-branches::before {
-  left: 22%;
-  right: 22%;
-}
-
-.hd-branch {
-  position: relative;
-  display: grid;
-  gap: 0.8rem;
-  justify-items: center;
-}
-
-.hd-leaves {
-  position: relative;
-  display: grid;
-  gap: 0.45rem;
-}
-
-.hd-leaves::before {
-  content: "";
-  position: absolute;
-  top: -0.8rem;
-  left: 50%;
-  height: 0.8rem;
-  border-left: 2px solid var(--ink);
-}
-
-.leaf-node {
-  min-height: 2.8rem;
-  min-width: 8.5rem;
-  background: color-mix(in srgb, var(--blue) 12%, var(--panel));
-}
-
-.branch-level > .tree-node::before,
-.branch-level .hd-branch > .tree-node::before {
-  content: "";
-  position: absolute;
-  top: -0.6rem;
-  left: 50%;
-  height: 0.6rem;
-  border-left: 2px solid var(--ink);
-}
-
-.tree-node strong,
-.tree-node span,
-.tree-node code {
-  display: block;
-}
-
-.tree-node strong {
-  font-size: clamp(1rem, 1.35vw, 1.2rem);
-}
-
-.tree-node span {
-  color: var(--lede);
-  font-weight: 750;
-}
-
-.seed-node {
-  background: var(--blue);
-  color: var(--accent-ink);
-}
-
-.seed-node span {
-  color: var(--accent-ink);
-}
-
-.master-node {
-  border-top: 0.45rem solid var(--pink);
-}
-
 .wallet-branches {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -1527,20 +1423,8 @@ details summary {
   .wallet-visual,
   .backup-comparison,
   .script-fanout,
-  .tree-level,
   .split-callout {
     grid-template-columns: 1fr;
-  }
-
-  .tree-level {
-    display: grid;
-  }
-
-  .branch-level::before,
-  .tree-level + .tree-level::after,
-  .branch-level > .tree-node::before,
-  .branch-level .hd-branch > .tree-node::before {
-    display: none;
   }
 
   .wallet-arrow {

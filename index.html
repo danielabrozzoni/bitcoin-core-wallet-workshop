@@ -1107,40 +1107,8 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
     <section id="wallet-hd" class="slide area-slide">
       <h2>HD wallets</h2>
       <p class="area-intro">Bitcoin Core 0.13.0 introduced BIP32 hierarchical deterministic key generation for newly created wallets.</p>
-      <div class="hd-tree" aria-label="HD wallet key tree">
-        <div class="tree-level">
-          <div class="tree-node seed-node"><strong>seed</strong></div>
-        </div>
-        <div class="tree-level">
-          <div class="tree-node master-node"><strong>master extended private key</strong><code>m</code></div>
-        </div>
-        <div class="tree-level branch-level hd-branches">
-          <div class="hd-branch">
-            <div class="tree-node"><strong>extended child key</strong><code>m/0'</code></div>
-            <div class="hd-leaves">
-              <div class="tree-node leaf-node"><code>m/0'/0</code></div>
-              <div class="tree-node leaf-node"><code>m/0'/1</code></div>
-              <div class="tree-node leaf-node"><code>m/0'/2</code></div>
-            </div>
-          </div>
-          <div class="hd-branch">
-            <div class="tree-node"><strong>extended child key</strong><code>m/1'</code></div>
-            <div class="hd-leaves">
-              <div class="tree-node leaf-node"><code>m/1'/0</code></div>
-              <div class="tree-node leaf-node"><code>m/1'/1</code></div>
-              <div class="tree-node leaf-node"><code>m/1'/2</code></div>
-            </div>
-          </div>
-          <div class="hd-branch">
-            <div class="tree-node"><strong>extended child key</strong><code>m/2'</code></div>
-            <div class="hd-leaves">
-              <div class="tree-node leaf-node"><code>m/2'/0</code></div>
-              <div class="tree-node leaf-node"><code>m/2'/1</code></div>
-              <div class="tree-node leaf-node"><code>m/2'/2</code></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <img class="slide-image hd-wallet-image" src="images/bip32.png" alt="BIP32 hierarchy showing a seed deriving a master key, account keys, and child keys">
+      <p class="image-credit">Image from <em>Mastering Bitcoin</em>.</p>
     </section>
 
     <section id="wallet-scripts" class="slide area-slide">

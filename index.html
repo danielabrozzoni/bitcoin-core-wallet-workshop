@@ -713,7 +713,6 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
 total 16
 -rw-r--r--   1 alice  staff    28 Jun 16 10:15 bitcoin.conf
 drwx------   8 alice  staff   256 Jun 16 10:18 regtest
--rw-------   1 alice  staff   193 Jun 16 10:18 settings.json
 
 ls -l bitcoind-datadir/regtest
 
@@ -725,7 +724,9 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
 -rw-------   1 alice  staff  932824 Jun 16 10:18 debug.log
 -rw-------   1 alice  staff  247985 Jun 16 10:18 fee_estimates.dat
 -rw-------   1 alice  staff      27 Jun 16 10:18 mempool.dat
--rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat</code></pre>
+-rw-------   1 alice  staff 2004051 Jun 16 10:18 peers.dat
+-rw-------   1 alice  staff   193 Jun 16 10:18 settings.json
+</code></pre>
     </section>
 
     <section id="wallet-overview" class="slide area-slide">
@@ -1028,7 +1029,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <p class="exercise-copy">Coinbase rewards cannot be spent until they are 100 blocks deep. Where is that maturity limit defined in the Bitcoin Core codebase, and where is it enforced?</p>
       <div class="callout expected">
         <h3>Starting point</h3>
-        <p>Look for the constant in <code>src/consensus/consensus.h</code>, then use GitHub search to see where the variable is used.</p>
+        <p>Start from the <a href="https://github.com/bitcoin/bitcoin">Bitcoin Core GitHub repository</a>. Look for the constant in <code>src/consensus/consensus.h</code>, then use GitHub search to see where the variable is used.</p>
       </div>
     </section>
 
@@ -1036,6 +1037,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <h2>Exercise 02: raw wallet operations</h2>
       <p class="exercise-copy">Optional challenge: if you finished Exercise 01, use the remaining time to spend coins with the raw transaction RPCs.</p>
       <p class="exercise-copy">The goal is to create a transaction manually with <code>createrawtransaction</code>, sign it with <code>signrawtransactionwithwallet</code>, and broadcast it with <code>sendrawtransaction</code>.</p>
+      <p class="exercise-copy">Use <code>listunspent</code> to see which wallet UTXOs are available as inputs. With <code>createrawtransaction</code>, you specify both the inputs and the outputs yourself, so you also need to calculate the fee yourself.</p>
       <div class="file-panel">
         <div>
           <code>Optional</code>
@@ -1049,8 +1051,12 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <p class="file-panel-label command-list-label">Commands to use:</p>
       <div class="file-panel">
         <div>
+          <code>listunspent</code>
+          <span>Find spendable UTXOs you can use as transaction inputs.</span>
+        </div>
+        <div>
           <code>createrawtransaction</code>
-          <span>Create the unsigned transaction.</span>
+          <span>Create the unsigned transaction by manually specifying inputs and outputs. The input/output difference is the fee.</span>
         </div>
         <div>
           <code>signrawtransactionwithwallet</code>

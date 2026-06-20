@@ -49,8 +49,8 @@
         <a class="nav-sub" href="#setup-start" data-parent="setup">Start bitcoind</a>
         <a class="nav-sub" href="#setup-daemon" data-parent="setup">Run in the background</a>
         <a class="nav-sub" href="#node-cli-datadir" data-parent="setup">Using -datadir</a>
-        <a class="nav-sub" href="#node-cli-first-commands" data-parent="setup">First commands to try</a>
         <a class="nav-sub" href="#node-cli-help" data-parent="setup">Getting help</a>
+        <a class="nav-sub" href="#node-shutdown-restart" data-parent="setup">Shut down and restart</a>
         <a class="nav-sub" href="#setup-confirm-regtest" data-parent="setup">Confirm regtest is empty</a>
       </div>
       <a class="nav-main" href="#datadir-tour" data-group="datadir"><span>05</span>Inside the data directory</a>
@@ -127,6 +127,7 @@
 
     <section id="project-technical" class="slide area-slide">
       <h2>What does it do technically?</h2>
+      <p class="area-intro">At a technical level, Bitcoin Core is a validating node: it checks blocks and transactions, maintains local state, and connects to the network.</p>
       <ul class="area-list">
         <li><strong>Validates Bitcoin independently:</strong> downloads blocks and verifies proof of work, transactions, scripts, and consensus rules.</li>
         <li><strong>Maintains local state:</strong> stores the blockchain, tracks the UTXO set, and manages the mempool.</li>
@@ -643,28 +644,6 @@ daemon=1</code></pre>
       <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir &lt;command&gt;</code></pre>
     </section>
 
-    <section id="node-cli-first-commands" class="slide area-slide">
-      <h2>First commands to try</h2>
-      <p class="exercise-copy">Once the node is running, try a read-only command first. <code>getblockchaininfo</code> asks the node what chain it is on and how many blocks it has.</p>
-      <p class="exercise-copy">When you need to stop the node, use <code>stop</code>. It lets Bitcoin Core shut down cleanly instead of killing the process from the outside.</p>
-      <div class="file-panel">
-        <div>
-          <code>getblockchaininfo</code>
-          <span>Returns information about the current chain: network, block height, and sync status.</span>
-        </div>
-        <div>
-          <code>stop</code>
-          <span>Cleanly shuts down the daemon. Prefer this over killing the process.</span>
-        </div>
-      </div>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir getblockchaininfo
-bitcoin-cli -datadir=bitcoind-datadir stop</code></pre>
-      <div class="callout expected">
-        <h3>Tip</h3>
-        <p>Most commands take optional arguments. You can pass them positionally or by name: <code>bitcoin-cli -named -datadir=bitcoind-datadir &lt;command&gt; param1=value param2=value</code>.</p>
-      </div>
-    </section>
-
     <section id="node-cli-help" class="slide area-slide">
       <h2>Getting help</h2>
       <p class="exercise-copy">You do not need to memorize every RPC command. Bitcoin Core includes help text for the full command list and for each individual command.</p>
@@ -686,6 +665,14 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
         <h3>Tip</h3>
         <p>When in doubt during the exercises, <code>help &lt;command&gt;</code> is your first stop. The argument list, types, and examples are all there.</p>
       </div>
+    </section>
+
+    <section id="node-shutdown-restart" class="slide area-slide">
+      <h2>Shut down and restart the node</h2>
+      <p class="exercise-copy">Use the RPC <code>stop</code> command to shut down Bitcoin Core cleanly. This gives the node time to flush data and close files properly.</p>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir stop</code></pre>
+      <p class="exercise-copy">To restart the node, run <code>bitcoind</code> again.</p>
+      <pre class="code command-code"><code>./bitcoind -datadir=bitcoind-datadir</code></pre>
     </section>
 
     <section id="setup-confirm-regtest" class="slide area-slide">

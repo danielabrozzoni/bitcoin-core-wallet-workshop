@@ -46,7 +46,7 @@
         <a class="nav-sub" href="#setup-version" data-parent="setup">Check the binaries</a>
         <a class="nav-sub" href="#setup-datadir" data-parent="setup">Create a Bitcoin data directory</a>
         <a class="nav-sub" href="#setup-config" data-parent="setup">Create bitcoin.conf</a>
-        <a class="nav-sub" href="#setup-start" data-parent="setup">Start bitcoind</a>
+        <a class="nav-sub" href="#setup-start" data-parent="setup">Start ./bitcoind</a>
         <a class="nav-sub" href="#setup-daemon" data-parent="setup">Run in the background</a>
         <a class="nav-sub" href="#node-cli-datadir" data-parent="setup">Using -datadir</a>
         <a class="nav-sub" href="#node-cli-help" data-parent="setup">Getting help</a>
@@ -296,7 +296,7 @@
       <h2>Other subsystems</h2>
       <p class="area-intro">Several other areas are important for specific use cases, integrations, and developer workflows.</p>
       <div class="goal-grid">
-        <div><h3>RPC and CLI</h3><p><code>src/rpc</code>, <code>src/wallet/rpc</code>, and <code>bitcoin-cli</code> expose node and wallet operations to users and scripts.</p></div>
+        <div><h3>RPC and CLI</h3><p><code>src/rpc</code>, <code>src/wallet/rpc</code>, and <code>./bitcoin-cli</code> expose node and wallet operations to users and scripts.</p></div>
         <div><h3>GUI</h3><p><code>src/qt</code> presents node and wallet state without duplicating validation logic.</p></div>
         <div><h3>Indexes</h3><p><code>src/index</code> stores optional query-oriented data such as txindex and block filters.</p></div>
         <div><h3>Mining</h3><p><code>src/node/miner.cpp</code> and <code>src/rpc/mining.cpp</code> assemble block templates.</p></div>
@@ -335,15 +335,15 @@
     <section id="workshop-intro" class="slide area-slide">
       <h2>Workshop overview</h2>
       <p class="exercise-copy">Today's workshop is focused on using Bitcoin Core and its wallet. We will start a node in regtest mode, send it commands, and watch its local state change.</p>
-      <p class="exercise-copy">To do this we will use two separate programs: <code>bitcoind</code>, which runs the node, and <code>bitcoin-cli</code>, which sends commands to that running node.</p>
+      <p class="exercise-copy">To do this we will use two separate programs: <code>./bitcoind</code>, which runs the node, and <code>./bitcoin-cli</code>, which sends commands to that running node.</p>
 
       <div class="rpc-options">
         <div>
-          <code>bitcoind</code>
+          <code>./bitcoind</code>
           <span>The long-running process: reads configuration, owns the data directory, validates blocks and transactions, maintains wallets, and listens for local RPC calls.</span>
         </div>
         <div>
-          <code>bitcoin-cli</code>
+          <code>./bitcoin-cli</code>
           <span>The client program: connects to the running daemon, calls a method such as <code>getblockchaininfo</code> or <code>createwallet</code>, then shows the JSON result.</span>
         </div>
       </div>
@@ -374,7 +374,7 @@
 
     <section id="setup-goal" class="slide area-slide">
       <h2>Exercise 0: setup</h2>
-      <p class="exercise-copy">The first exercise sets up the environment we'll use throughout the workshop. We download the Bitcoin Core command-line binaries, create a data directory just for regtest, start the node daemon <code>bitcoind</code>, and use <code>bitcoin-cli</code> to prove the node is reachable.</p>
+      <p class="exercise-copy">The first exercise sets up the environment we'll use throughout the workshop. We download the Bitcoin Core command-line binaries, create a data directory just for regtest, start the node daemon <code>./bitcoind</code>, and use <code>./bitcoin-cli</code> to prove the node is reachable.</p>
       <div class="file-panel">
         <div>
           <code>Time</code>
@@ -448,7 +448,7 @@ Set-Location planb-core-workshop</code></pre>
 
     <section id="setup-unpack" class="slide area-slide">
       <h2>Unpack and prepare the binaries</h2>
-      <p class="exercise-copy">The archive we just downloaded contains the Bitcoin Core programs and support files. First unpack it, then copy only the <code>bitcoind</code> and <code>bitcoin-cli</code> binaries into the workshop directory root. This way, the rest of the commands stay short.</p>
+      <p class="exercise-copy">The archive we just downloaded contains the Bitcoin Core programs and support files. First unpack it, then copy only the <code>./bitcoind</code> and <code>./bitcoin-cli</code> binaries into the workshop directory root. This way, the rest of the commands stay short.</p>
       <div class="step-block">
         <div class="os-code">
           <div class="os-tabs" aria-label="Download target">
@@ -500,7 +500,7 @@ Copy-Item .\bitcoin-31.0\bin\bitcoin-cli.exe .</code></pre>
 
     <section id="setup-version" class="slide area-slide">
       <h2>Check the binaries</h2>
-      <p class="exercise-copy">Before starting a node, check that both local programs run. <code>bitcoind</code> is the node process, and <code>bitcoin-cli</code> is the client we will use to send commands to it. Both should print the version.</p>
+      <p class="exercise-copy">Before starting a node, check that both local programs run. <code>./bitcoind</code> is the node process, and <code>./bitcoin-cli</code> is the client we will use to send commands to it. Both should print the version.</p>
       <div class="step-block">
         <div class="os-code">
           <div class="os-tabs" aria-label="Operating system">
@@ -578,7 +578,7 @@ Copyright (C) 2009-2026 The Bitcoin Core developers</code></pre>
     </section>
 
     <section id="setup-start" class="slide area-slide">
-      <h2>Start <code>bitcoind</code></h2>
+      <h2>Start <code>./bitcoind</code></h2>
       <p class="exercise-copy">Now start the node. The first run stays in the foreground, which means the terminal fills with log output and the process keeps running until you stop it.</p>
       <p class="exercise-copy">This is useful once because you can see which data directory is being used, which config options were loaded, and when startup is complete.</p>
       <div class="os-code">
@@ -608,7 +608,7 @@ Done loading</code></pre>
 
     <section id="setup-daemon" class="slide area-slide">
       <h2>Run in the background</h2>
-      <p class="exercise-copy">After confirming that startup works, run the node in a way that leaves your terminal available. On macOS and Linux, we can run it in daemon mode. On Windows, keep the node running in one terminal and use a second terminal for <code>bitcoin-cli</code>.</p>
+      <p class="exercise-copy">After confirming that startup works, run the node in a way that leaves your terminal available. On macOS and Linux, we can run it in daemon mode. On Windows, keep the node running in one terminal and use a second terminal for <code>./bitcoin-cli</code>.</p>
       <div class="file-panel">
         <div>
           <code>macOS / Linux</code>
@@ -616,7 +616,7 @@ Done loading</code></pre>
         </div>
         <div>
           <code>Windows</code>
-          <span><code>daemon=1</code> is not supported. Keep <code>bitcoin.conf</code> unchanged and run <code>bitcoind</code> in a separate terminal.</span>
+          <span><code>daemon=1</code> is not supported. Keep <code>bitcoin.conf</code> unchanged and run <code>./bitcoind</code> in a separate terminal.</span>
         </div>
       </div>
       <p class="exercise-copy config-followup">For macOS and Linux, modify <code>bitcoin.conf</code> so it now contains:</p>
@@ -639,9 +639,9 @@ daemon=1</code></pre>
 
     <section id="node-cli-datadir" class="slide area-slide">
       <h2>Using <code>-datadir</code></h2>
-      <p class="exercise-copy"><code>bitcoin-cli</code> needs to connect to the same data directory as the node. Passing <code>-datadir=bitcoind-datadir</code> tells it where to find the regtest node's RPC connection details.</p>
-      <p class="exercise-copy">Use this option on every <code>bitcoin-cli</code> command in the workshop.</p>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir &lt;command&gt;</code></pre>
+      <p class="exercise-copy"><code>./bitcoin-cli</code> needs to connect to the same data directory as the node. Passing <code>-datadir=bitcoind-datadir</code> tells it where to find the regtest node's RPC connection details.</p>
+      <p class="exercise-copy">Use this option on every <code>./bitcoin-cli</code> command in the workshop.</p>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir &lt;command&gt;</code></pre>
     </section>
 
     <section id="node-cli-help" class="slide area-slide">
@@ -658,9 +658,9 @@ daemon=1</code></pre>
           <span>Shows full documentation for a specific command: arguments, types, defaults, and example calls.</span>
         </div>
       </div>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir help
-bitcoin-cli -datadir=bitcoind-datadir help &lt;command&gt;
-bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir help
+./bitcoin-cli -datadir=bitcoind-datadir help &lt;command&gt;
+./bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
       <div class="callout expected">
         <h3>Tip</h3>
         <p>When in doubt during the exercises, <code>help &lt;command&gt;</code> is your first stop. The argument list, types, and examples are all there.</p>
@@ -671,7 +671,7 @@ bitcoin-cli -datadir=bitcoind-datadir help getblockchaininfo</code></pre>
       <h2>Shut down and restart the node</h2>
       <p class="exercise-copy">Use the RPC <code>stop</code> command to shut down Bitcoin Core cleanly. This gives the node time to flush data and close files properly.</p>
       <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir stop</code></pre>
-      <p class="exercise-copy">To restart the node, run <code>bitcoind</code> again.</p>
+      <p class="exercise-copy">To restart the node, run <code>./bitcoind</code> again.</p>
       <pre class="code command-code"><code>./bitcoind -datadir=bitcoind-datadir</code></pre>
     </section>
 
@@ -798,7 +798,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <h2>Mining in regtest</h2>
       <p class="exercise-copy">On mainnet, miners compete to create blocks. In regtest there are no external miners and no network competition, so blocks only appear when we create them ourselves.</p>
       <p class="exercise-copy">Bitcoin Core gives us the <code>generatetoaddress</code> RPC for this. It creates new block templates, solves them immediately in regtest, and sends each block's coinbase reward to the address we provide.</p>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir generatetoaddress &lt;blocks&gt; &lt;address&gt;</code></pre>
       <div class="callout expected">
         <h3>Coinbase maturity</h3>
         <p>The block reward is a coinbase output. Coinbase outputs cannot be spent immediately; they must be buried under 100 more blocks before they become spendable.</p>
@@ -822,7 +822,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Coinbase rewards that belong to the wallet but are not yet 100 blocks deep.</span>
         </div>
       </div>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir getbalances</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir getbalances</code></pre>
     </section>
 
     <section id="wallet-listunspent" class="slide area-slide">
@@ -846,13 +846,13 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Whether the wallet has what it needs to spend that output.</span>
         </div>
       </div>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir listunspent</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir listunspent</code></pre>
     </section>
 
     <section id="wallet-sendtoaddress" class="slide area-slide">
       <h2>Sending: the easy way</h2>
       <p class="area-intro"><code>sendtoaddress</code> sends to one address. Bitcoin Core handles coin selection, change, and fee estimation automatically, then returns a txid.</p>
-      <pre class="code command-code"><code>bitcoin-cli sendtoaddress &lt;address&gt; &lt;amount&gt;</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli sendtoaddress &lt;address&gt; &lt;amount&gt;</code></pre>
       <p class="file-panel-label">Useful optional arguments:</p>
       <div class="rpc-options">
         <div>
@@ -864,13 +864,13 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Deduct the fee from the sent amount instead of adding it on top.</span>
         </div>
       </div>
-      <p class="callout expected">On regtest, fee estimation is not reliable. Pass an explicit <code>fee_rate</code> using named arguments: <code>bitcoin-cli -named sendtoaddress address=&lt;address&gt; amount=&lt;amount&gt; fee_rate=1</code></p>
+      <p class="callout expected">On regtest, fee estimation is not reliable. Pass an explicit <code>fee_rate</code> using named arguments: <code>./bitcoin-cli -named sendtoaddress address=&lt;address&gt; amount=&lt;amount&gt; fee_rate=1</code></p>
     </section>
 
     <section id="wallet-send" class="slide area-slide">
       <h2>Sending: more control</h2>
       <p class="area-intro"><code>send</code> is more flexible than <code>sendtoaddress</code>: multiple outputs, manual fee control, and coin selection options, while still signing and broadcasting automatically.</p>
-      <pre class="code command-code"><code>bitcoin-cli send '{"&lt;address&gt;": &lt;amount&gt;, "&lt;address2&gt;": &lt;amount2&gt;}'</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli send '{"&lt;address&gt;": &lt;amount&gt;, "&lt;address2&gt;": &lt;amount2&gt;}'</code></pre>
       <p class="file-panel-label">Useful optional arguments:</p>
       <div class="rpc-options">
         <div>
@@ -894,17 +894,17 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <div class="raw-steps">
         <div>
           <h3>1. Create</h3>
-          <pre class="code"><code>bitcoin-cli createrawtransaction '[{"txid": "...", "vout": 0}]' '{"&lt;address&gt;": &lt;amount&gt;}'</code></pre>
+          <pre class="code"><code>./bitcoin-cli createrawtransaction '[{"txid": "...", "vout": 0}]' '{"&lt;address&gt;": &lt;amount&gt;}'</code></pre>
           <p>No automatic coin selection or change. If you do not add a change output, the difference goes to the miner.</p>
         </div>
         <div>
           <h3>2. Sign</h3>
-          <pre class="code"><code>bitcoin-cli signrawtransactionwithwallet &lt;hex&gt;</code></pre>
+          <pre class="code"><code>./bitcoin-cli signrawtransactionwithwallet &lt;hex&gt;</code></pre>
           <p>Signs the transaction using keys in the loaded wallet.</p>
         </div>
         <div>
           <h3>3. Broadcast</h3>
-          <pre class="code"><code>bitcoin-cli sendrawtransaction &lt;hex&gt;</code></pre>
+          <pre class="code"><code>./bitcoin-cli sendrawtransaction &lt;hex&gt;</code></pre>
           <p>Pushes the signed transaction to the network.</p>
         </div>
       </div>
@@ -944,7 +944,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
       <div class="callout expected">
         <h3>If more than one wallet is loaded</h3>
         <p>Wallet commands need <code>-rpcwallet=&lt;name&gt;</code> when multiple wallets are loaded. For the workshop, keep the commands simple by unloading every wallet except the one you are using.</p>
-        <pre class="code"><code>bitcoin-cli -datadir=bitcoind-datadir unloadwallet &lt;wallet_name&gt;</code></pre>
+        <pre class="code"><code>./bitcoin-cli -datadir=bitcoind-datadir unloadwallet &lt;wallet_name&gt;</code></pre>
       </div>
     </section>
 
@@ -992,7 +992,7 @@ drwx------   6 alice  staff     192 Jun 16 10:18 chainstate
           <span>Check that the new transaction is waiting in the mempool.</span>
         </div>
       </div>
-      <pre class="code command-code"><code>bitcoin-cli -named -datadir=bitcoind-datadir sendtoaddress address=&lt;address&gt; amount=&lt;amount&gt; fee_rate=&lt;sats/vB&gt;</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -named -datadir=bitcoind-datadir sendtoaddress address=&lt;address&gt; amount=&lt;amount&gt; fee_rate=&lt;sats/vB&gt;</code></pre>
       <p class="exercise-copy panel-followup"><code>sendtoaddress</code> returns a transaction id. Keep that txid so you can inspect the transaction in the next step.</p>
     </section>
 
@@ -1320,7 +1320,7 @@ many keys in the signing policy</code></pre>
     <section id="descriptor-exercise-list" class="slide area-slide">
       <h2>List wallet descriptors</h2>
       <p class="exercise-copy">Start with the wallet from Exercise 01 and call <code>listdescriptors</code>. A default descriptor wallet has eight active descriptors: four address types, each with one external descriptor and one internal descriptor.</p>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
       <p class="file-panel-label">What to look for:</p>
       <div class="file-panel">
         <div>
@@ -1347,8 +1347,8 @@ many keys in the signing policy</code></pre>
       <h2>Watch <code>next_index</code></h2>
       <p class="exercise-copy">Every descriptor in this wallet is ranged. The <code>/*</code> at the end of the extended public key path means the descriptor can derive many addresses, one per index.</p>
       <p class="exercise-copy">The <code>next_index</code> field tells us which index Bitcoin Core will derive next for that descriptor. Generate another address, then list descriptors again and compare the result.</p>
-      <pre class="code command-code"><code>bitcoin-cli -datadir=bitcoind-datadir getnewaddress
-bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -datadir=bitcoind-datadir getnewaddress
+./bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
       <div class="callout expected">
         <h3>Expected result</h3>
         <p>The external descriptor used by <code>getnewaddress</code> should have a higher <code>next_index</code>. In a default wallet this is usually the <code>wpkh(...)</code> descriptor, unless you chose a different default address type.</p>
@@ -1358,10 +1358,10 @@ bitcoin-cli -datadir=bitcoind-datadir listdescriptors</code></pre>
     <section id="descriptor-exercise-address-types" class="slide area-slide">
       <h2>Generate different address types</h2>
       <p class="exercise-copy">Because the wallet has multiple descriptors, it can generate different address types from the same wallet. Use named arguments with <code>getnewaddress</code> and set <code>address_type</code>.</p>
-      <pre class="code command-code"><code>bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=legacy
-bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=p2sh-segwit
-bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=bech32
-bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=bech32m</code></pre>
+      <pre class="code command-code"><code>./bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=legacy
+./bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=p2sh-segwit
+./bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=bech32
+./bitcoin-cli -named -datadir=bitcoind-datadir getnewaddress address_type=bech32m</code></pre>
       <div class="file-panel">
         <div>
           <code>legacy</code>
